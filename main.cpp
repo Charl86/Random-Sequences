@@ -3,10 +3,11 @@
 #include <fstream>
 #include <cmath>
 #include <ctime>
+#include <string>
 
 using namespace std;
 
-#define ESPACIO 10
+#define ESPACIO 14
 
 int userSequence();
 string makeSequences(int);
@@ -43,8 +44,15 @@ string makeSequences(int num_sec) {
     ofstream Secuencias;
     Secuencias.open(seqFilename + ".txt");  // Ajusta el tipo del archivo.
 
+    Secuencias << "Data ID    ";
+    for (int numsPerSeq = 1; numsPerSeq <= 10; numsPerSeq++) {
+        Secuencias << setw(ESPACIO - 1) << "No. " << numsPerSeq;
+    }
+    Secuencias << setw(ESPACIO) << "Clicks" << setw(ESPACIO) << "Numero Mayor" << endl;
+    Secuencias << string(180, '=') << endl;
+
     for (int i = 1; i <= num_sec; i++) {
-        Secuencias << "Secuencia " << i;
+        Secuencias << "Secuencia #" << i;
         int mayor = -1;
         for (int j = 1; j <= 10; j++) {  // 10 es el número de núms. rands. por secs.
             int random_number = rand();
@@ -77,29 +85,45 @@ void getSequences(string secFileName, int num_sec) {
 
     double currNum;
 
+    Normalized << "Data ID    ";
+    for (int numsPerSeq = 1; numsPerSeq <= 10; numsPerSeq++) {
+        Normalized << setw(ESPACIO - 1) << "No. " << numsPerSeq;
+    }
+    Normalized << setw(ESPACIO) << "Clicks" << setw(ESPACIO) << "Numero Mayor" << endl;
+    Normalized << string(180, '=') << endl;
     // Debugging:
     // string some_other_string;
-    // string some_string;
-    // Secuencias.seekg(12L + 2L * (121L), ios::beg);  // Go to greatest num.
+    string some_string;
+    Secuencias.seekg(531, ios::beg);  // Go to greatest num.
     // Secuencias.seekg(254L, ios::beg);
     // Secuencias.seekg(387L, ios::beg);
     // Secuencias >> some_other_string;
     // cout << endl << some_other_string;
     // Secuencias.seekg(133L * 4L + (16L), ios::beg);  // Go to first num. in sequence.
-    // Secuencias >> some_string;
-    // cout << endl <<some_string;
+    Secuencias >> some_string;
+    cout << endl <<some_string;
 
     // Normalizar números por secuencia.
     for (int i = 1; i <= num_sec; i++) {
         Normalized << "Secuencia #" << i;
 
         double mayor;
-        Secuencias.seekg(133L * (i - 1L) + 121L, ios::beg);  // Go to greatest number.
+        Secuencias.seekg(181 * (i + 1), ios::beg);  // Go to beginning of nth sequence.
+        Secuencias.seekg(175, ios::cur);
         Secuencias >> mayor;
-        Secuencias.seekg(133L * (i - 1L) + 16L, ios::beg);  // Go to first number in sequence.
+
+        Secuencias.seekg(181 * (i + 1), ios::beg);
+        Secuencias.seekg(20, ios::cur);  // Go to first number in sequence.
+        // switch(i) {
+        //     case 1: Secuencias.seekg(133 * (i - 1) + (9 + ESPACIO/2.0), ios::beg); break;
+        //     case 2: Secuencias.seekg(133 * (i - 1) + 14, ios::beg); break;
+        // }
+
         for (int j = 1; j <= 10; j++) {
             Secuencias >> currNum;
             
+            // cout << endl << currNum/mayor << endl;
+
             Normalized << setw(ESPACIO) << currNum/mayor;
         }
         Normalized << setw(ESPACIO) << "{Clicks}";
