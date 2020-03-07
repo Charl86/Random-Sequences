@@ -73,31 +73,37 @@ void nrmlzSequences(string fileN, int num_sec) {
     ofstream Normalized;
     Normalized.open("Secuencias_Normalizadas.txt");
 
-    string nameOfSeq;
-    double randNum;
+    double currNum;
 
     // Debugging:
+    string some_other_string;
     string some_string;
-    // Secuencias.seekg(72L + 19L + 20L + 10L, ios::beg);
-    // Secuencias >> some_string;
-    // cout << endl << some_string;
-    Secuencias.seekg(12L + 4L, ios::beg);
+    // Secuencias.seekg(12L + 2L * (121L), ios::beg);  // Go to greatest num.
+    // Secuencias.seekg(254L, ios::beg);
+    // Secuencias.seekg(387L, ios::beg);
+    // Secuencias >> some_other_string;
+    // cout << endl << some_other_string;
+    Secuencias.seekg(133L * 4L + (16L), ios::beg);  // Go to first num. in sequence.
     Secuencias >> some_string;
-    cout << some_string;
+    cout << endl <<some_string;
 
     // Normalizar números por secuencia.
     // while (!(Secuencias.eof())) {
     //     for (int i = 1; i <= num_sec; i++) {
-    //         Secuencias >> nameOfSeq;
     //         Normalized << "Secuencia #" << i;
-    //         for (int j = 1, mayor; j <= 10; j++) {
-    //             // Secuencias.seekg(72L + 19L + 20L + 10L, ios::beg);  // Go to greatest number.
-    //             // Secuencias >> mayor;
-    //             // Secuencias.seekg()  // Go to first number in sequence.
 
-    //             Secuencias >> randNum;
-    //             Normalized << setw(ESPACIO) << randNum/mayor;
+    //         double mayor;
+    //         Secuencias.seekg(72L + 19L + 20L + 10L, ios::beg);  // Go to greatest number.
+    //         Secuencias >> mayor;
+    //         Secuencias.seekg(12L + 4L, ios::beg);  // Go to first number in sequence.
+    //         for (int j = 1, mayor; j <= 10; j++) {
+    //             Secuencias >> currNum;
+
+    //             Normalized << setw(ESPACIO) << currNum/mayor;
     //         }
+    //         Normalized << setw(ESPACIO) << "{Clicks}";
+    //         Normalized << setw(ESPACIO) << mayor;
+    //         if (i != num_sec) {Normalized << endl;}
     //     }
 
     // }
