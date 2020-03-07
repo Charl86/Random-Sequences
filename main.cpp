@@ -60,7 +60,7 @@ void makeSequences(string fileN, int num_sec) {
         }
         Secuencias << setw(ESPACIO) << "{Clicks}";
         Secuencias << setw(ESPACIO) << mayor;
-        Secuencias << endl;
+        if (i != num_sec) {Secuencias << endl;}
     }
     Secuencias.close();
 }
@@ -78,18 +78,25 @@ void nrmlzSequences(string fileN, int num_sec) {
 
     // Debugging:
     string some_string;
-    Secuencias.seekg(72L + 19L + 20L + 10L, ios::beg);
+    // Secuencias.seekg(72L + 19L + 20L + 10L, ios::beg);
+    // Secuencias >> some_string;
+    // cout << endl << some_string;
+    Secuencias.seekg(12L + 4L, ios::beg);
     Secuencias >> some_string;
-    cout << endl << some_string;
+    cout << some_string;
 
     // Normalizar números por secuencia.
     // while (!(Secuencias.eof())) {
     //     for (int i = 1; i <= num_sec; i++) {
     //         Secuencias >> nameOfSeq;
     //         Normalized << "Secuencia #" << i;
-    //         for (int j = 1; j <= 10; j++) {
+    //         for (int j = 1, mayor; j <= 10; j++) {
+    //             // Secuencias.seekg(72L + 19L + 20L + 10L, ios::beg);  // Go to greatest number.
+    //             // Secuencias >> mayor;
+    //             // Secuencias.seekg()  // Go to first number in sequence.
+
     //             Secuencias >> randNum;
-    //             // Normalized << setw(ESPACIO) << randNum/mayor;
+    //             Normalized << setw(ESPACIO) << randNum/mayor;
     //         }
     //     }
 
