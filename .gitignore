@@ -4,3 +4,7 @@
 
 # Ignore text files:
 *.txt
+
+# Keep on ignoring:
+/files*number*generator.*
+/Doodle.*
