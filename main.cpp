@@ -8,7 +8,7 @@ using namespace std;
 
 #define ESPACIO 10
 
-string getSequence();
+string userSequence();
 void makeSequences(string, int);
 void nrmlzSequences(string, int);
 
@@ -22,7 +22,7 @@ int main() {
     cout << "Ingrese el numero de secuencias:" << endl;
     cin >> num_seq;
 
-    fileName = getSequence();
+    fileName = userSequence();
 
     makeSequences(fileName, num_seq);
     nrmlzSequences(fileName, num_seq);
@@ -31,7 +31,7 @@ int main() {
 }
 
 
-string getSequence() {
+string userSequence() {
     string seqFilename;
 
     cout << endl << "Ingrese el nombre del archivo"
@@ -60,6 +60,9 @@ void makeSequences(string fileN, int num_sec) {
         }
         Secuencias << setw(ESPACIO) << "{Clicks}";
         Secuencias << setw(ESPACIO) << mayor;
+        
+        // Testing:
+        // Secuencias << endl;
         if (i != num_sec) {Secuencias << endl;}
     }
     Secuencias.close();
@@ -76,37 +79,34 @@ void nrmlzSequences(string fileN, int num_sec) {
     double currNum;
 
     // Debugging:
-    string some_other_string;
-    string some_string;
+    // string some_other_string;
+    // string some_string;
     // Secuencias.seekg(12L + 2L * (121L), ios::beg);  // Go to greatest num.
     // Secuencias.seekg(254L, ios::beg);
     // Secuencias.seekg(387L, ios::beg);
     // Secuencias >> some_other_string;
     // cout << endl << some_other_string;
-    Secuencias.seekg(133L * 4L + (16L), ios::beg);  // Go to first num. in sequence.
-    Secuencias >> some_string;
-    cout << endl <<some_string;
+    // Secuencias.seekg(133L * 4L + (16L), ios::beg);  // Go to first num. in sequence.
+    // Secuencias >> some_string;
+    // cout << endl <<some_string;
 
     // Normalizar números por secuencia.
-    // while (!(Secuencias.eof())) {
-    //     for (int i = 1; i <= num_sec; i++) {
-    //         Normalized << "Secuencia #" << i;
+    for (int i = 1; i <= num_sec; i++) {
+        Normalized << "Secuencia #" << i;
 
-    //         double mayor;
-    //         Secuencias.seekg(72L + 19L + 20L + 10L, ios::beg);  // Go to greatest number.
-    //         Secuencias >> mayor;
-    //         Secuencias.seekg(12L + 4L, ios::beg);  // Go to first number in sequence.
-    //         for (int j = 1, mayor; j <= 10; j++) {
-    //             Secuencias >> currNum;
-
-    //             Normalized << setw(ESPACIO) << currNum/mayor;
-    //         }
-    //         Normalized << setw(ESPACIO) << "{Clicks}";
-    //         Normalized << setw(ESPACIO) << mayor;
-    //         if (i != num_sec) {Normalized << endl;}
-    //     }
-
-    // }
+        double mayor;
+        Secuencias.seekg(133L * (i - 1L) + 121L, ios::beg);  // Go to greatest number.
+        Secuencias >> mayor;
+        Secuencias.seekg(133L * (i - 1L) + 16L, ios::beg);  // Go to first number in sequence.
+        for (int j = 1; j <= 10; j++) {
+            Secuencias >> currNum;
+            
+            Normalized << setw(ESPACIO) << currNum/mayor;
+        }
+        Normalized << setw(ESPACIO) << "{Clicks}";
+        Normalized << setw(ESPACIO) << mayor;
+        if (i != num_sec) {Normalized << endl;}
+    }
     Secuencias.close();
     Normalized.close();
 }
