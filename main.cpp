@@ -8,44 +8,40 @@ using namespace std;
 
 #define ESPACIO 10
 
-string userSequence();
-void makeSequences(string, int);
-void nrmlzSequences(string, int);
+int userSequence();
+string makeSequences(int);
+void getSequences(string, int);
 
 
 int main() {
     srand((unsigned)time(0));
 
-    int num_seq;
-    string fileName;
+    int numberOfSeqs;
 
-    cout << "Ingrese el numero de secuencias:" << endl;
-    cin >> num_seq;
+    numberOfSeqs = userSequence();
 
-    fileName = userSequence();
-
-    makeSequences(fileName, num_seq);
-    nrmlzSequences(fileName, num_seq);
+    getSequences(makeSequences(numberOfSeqs), numberOfSeqs);
 
     return 0;
 }
 
 
-string userSequence() {
-    string seqFilename;
+int userSequence() {
+    int num_seq;
+    cout << "Ingrese el numero de secuencias:" << endl;
+    cin >> num_seq;
+    return num_seq;
+}
 
+
+string makeSequences(int num_sec) {
+    string seqFilename;
     cout << endl << "Ingrese el nombre del archivo"
     << " en donde desea guardar las secuencias:" << endl;
     cin >> seqFilename;
 
-    return seqFilename;
-}
-
-
-void makeSequences(string fileN, int num_sec) {
     ofstream Secuencias;
-    Secuencias.open(fileN + ".txt");  // Ajusta el tipo del archivo.
-
+    Secuencias.open(seqFilename + ".txt");  // Ajusta el tipo del archivo.
 
     for (int i = 1; i <= num_sec; i++) {
         Secuencias << "Secuencia " << i;
@@ -60,21 +56,24 @@ void makeSequences(string fileN, int num_sec) {
         }
         Secuencias << setw(ESPACIO) << "{Clicks}";
         Secuencias << setw(ESPACIO) << mayor;
-        
-        // Testing:
-        // Secuencias << endl;
         if (i != num_sec) {Secuencias << endl;}
     }
     Secuencias.close();
+    return seqFilename;
 }
 
 
-void nrmlzSequences(string fileN, int num_sec) {
+void getSequences(string secFileName, int num_sec) {
     fstream Secuencias;
-    Secuencias.open(fileN + ".txt");  // Ajusta el tipo del archivo.
+    Secuencias.open(secFileName + ".txt");  // Ajusta el tipo del archivo.
+
+    string nrmlzFileName;
+    cout << endl << "Ingrese el nombre del archivo"
+    << " en donde desea guardar las secuencias normalizadas:" << endl;
+    cin >> nrmlzFileName;
 
     ofstream Normalized;
-    Normalized.open("Secuencias_Normalizadas.txt");
+    Normalized.open(nrmlzFileName + ".txt");
 
     double currNum;
 
