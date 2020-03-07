@@ -1,0 +1,6 @@
+
+# Ignore VS code files:
+.vscode/
+
+# Ignore text files:
+*.txt
