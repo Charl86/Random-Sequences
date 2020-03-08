@@ -15,12 +15,14 @@ void getSequences(string, int);
 
 
 int main() {
-    srand((unsigned)time(0));
+    srand((unsigned)time(0));  // Se comienza una nueva semilla.
 
     int numberOfSeqs;
 
-    numberOfSeqs = userSequence();
+    numberOfSeqs = userSequence();  // Se asigna el número de secuencias.
 
+    // Esta función toma como argumentos el archivo para las secuencias y el número de
+    // secuencias.
     getSequences(makeSequences(numberOfSeqs), numberOfSeqs);
 
     return 0;
@@ -104,31 +106,24 @@ void getSequences(string secFileName, int num_sec) {
     cout << endl <<some_string;
 
     // Normalizar números por secuencia.
-    for (int i = 1; i <= num_sec; i++) {
-        Normalized << "Secuencia #" << i;
+    for (int n = 1; n <= num_sec; n++) {
+        Normalized << "Secuencia #" << n;
 
         double mayor;
-        Secuencias.seekg(181 * (i + 1), ios::beg);  // Go to beginning of nth sequence.
-        Secuencias.seekg(175, ios::cur);
+        Secuencias.seekg(181 * (n + 1), ios::beg);  // Va al principio de la enésima secuencia.
+        Secuencias.seekg(175, ios::cur);  // Va donde se encuentra el número mayor.
         Secuencias >> mayor;
 
-        Secuencias.seekg(181 * (i + 1), ios::beg);
-        Secuencias.seekg(20, ios::cur);  // Go to first number in sequence.
-        // switch(i) {
-        //     case 1: Secuencias.seekg(133 * (i - 1) + (9 + ESPACIO/2.0), ios::beg); break;
-        //     case 2: Secuencias.seekg(133 * (i - 1) + 14, ios::beg); break;
-        // }
+        Secuencias.seekg(181 * (n + 1), ios::beg);  // Va al principio de la enésima secuencia.
+        Secuencias.seekg(20, ios::cur);  // Va al primero número de la enésima secuencia.
 
         for (int j = 1; j <= 10; j++) {
             Secuencias >> currNum;
-            
-            // cout << endl << currNum/mayor << endl;
-
             Normalized << setw(ESPACIO) << currNum/mayor;
         }
         Normalized << setw(ESPACIO) << "{Clicks}";
         Normalized << setw(ESPACIO) << mayor;
-        if (i != num_sec) {Normalized << endl;}
+        if (n != num_sec) {Normalized << endl;}
     }
     Secuencias.close();
     Normalized.close();
