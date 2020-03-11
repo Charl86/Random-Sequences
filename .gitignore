@@ -5,6 +5,9 @@
 # Ignore text files:
 *.txt
 
+# Ignore exe files:
+*.exe
+
 # Keep on ignoring:
 /files*number*generator.*
 /Doodle.*
