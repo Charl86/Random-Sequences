@@ -148,12 +148,12 @@ void getSequences(string secFileName, int num_sec) {
         
         double mayor;
         // Va al principio de la enésima secuencia.
-        Secuencias.seekg((181 * (n + 1))), ios::beg);
+        Secuencias.seekg(181 * (n + 1), ios::beg);
         Secuencias.seekg(175, ios::cur);  // Va a donde se encuentra el número mayor.
         Secuencias >> mayor;
         
         // Va al principio de la enésima secuencia.
-        Secuencias.seekg((181 * (n + 1))), ios::beg);
+        Secuencias.seekg(181 * (n + 1), ios::beg);
         Secuencias.seekg(20, ios::cur);  // Va al primero número de la enésima secuencia.
 
         double currNum;
