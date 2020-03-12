@@ -30,9 +30,9 @@ using namespace std;
  *
  */
 
-int userSequence();                             // Receive user's input to generate rows
-string makeSequences(int);                      // Produce random sequence and save on file based on user's input
-void getSequences(string, int);                 // use makeSequences results to normalize sequence and save into another file
+int userSequence();  // Receive user's input to generate rows
+string makeSequences(int);  // Produce random sequence and save on file based on user's input
+void getSequences(string, int);  // use makeSequences results to normalize sequence and save into another file
 
 
 /*
@@ -42,15 +42,14 @@ void getSequences(string, int);                 // use makeSequences results to 
  */
 
 int main() {
-    srand((unsigned)time(0));                   // Se comienza una nueva semilla.
+    srand((unsigned)time(0));  // Se comienza una nueva semilla.
 
     int numberOfSeqs;
 
-    numberOfSeqs = userSequence();              // Se asigna el número de secuencias.
+    numberOfSeqs = userSequence();  // Se asigna el número de secuencias.
 
-                                                // Esta función toma como argumentos el archivo para las secuencias
-                                                // y el número de secuencias.
-
+    // Esta función toma como argumentos el archivo para las secuencias
+    // y el número de secuencias.
     getSequences(makeSequences(numberOfSeqs), numberOfSeqs);
 
     return 0;
