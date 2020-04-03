@@ -139,25 +139,34 @@ void getSequences(string secFileName, int num_sec) {
     for (int n = 1; n <= num_sec; n++) {
         Normalized << "Secuencia #" << n;  // Se inserta el número de la secuencia.
         
+        string trash;
         double mayor;
         // Va al principio de la enésima secuencia.
-        Secuencias.seekg(181 * (n + 1), ios::beg);
+        // Secuencias.seekg(181 * (n + 1), ios::beg);
         Secuencias.seekg(175, ios::cur);  // Va a donde se encuentra el número mayor.
         Secuencias >> mayor;
         
         // Va al principio de la enésima secuencia.
-        Secuencias.seekg(181 * (n + 1), ios::beg);
-        Secuencias.seekg(20, ios::cur);  // Va al primero número de la enésima secuencia.
+        // Secuencias.seekg(181 * (n + 1), ios::beg);
+        // Secuencias.seekg(20, ios::cur);  // Va al primero número de la enésima secuencia.
+        Secuencias.seekg(-160, ios::cur); // Va al primero número de la enésima secuencia.
 
         double currNum;
         for (int x = 1; x <= 10; x++) {
             Secuencias >> currNum;  // Se lee el número x de la secuencia n.
+    
+            // Logging:
+            // cout << "Num " << x << "    " << currNum << "    " << currNum << '/' << mayor;
+            // cout << endl;
+    
             // Se guarda la división del número x y el número mayor de la secuencia
             Normalized << setw(ESPACIO) << currNum/mayor;  // en el archivo del objeto 'Normalized'.
         }
-        Normalized << setw(ESPACIO) << "{Clicks}";  // Se insertan los clicks.
-        Normalized << setw(ESPACIO) << mayor;  // Se coloca el número mayor otra vez?
-        if (n != num_sec) {Normalized << endl;}  // Si se está interando por la última
+        getline(Secuencias, trash);
+        Normalized << trash << endl;
+        // Normalized << setw(ESPACIO) << "{Clicks}";  // Se insertan los clicks.
+        // Normalized << setw(ESPACIO) << mayor;  // Se coloca el número mayor otra vez?
+        // if (n != num_sec) {Normalized << endl;}  // Si se está interando por la última
                                                 // secuencia, entonces no insertar una línea
                                                // en blanco (al final).
     }
