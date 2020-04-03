@@ -127,20 +127,14 @@ void getSequences(string secFileName, int num_sec) {
     ofstream Normalized;  // Se crea un objeto para el archivo de las secs. normalizadas
     Normalized.open(nrmlzFileName + ".txt");  // y se crea el archivo según el nombre provisto.
 
-    // Se la categoría de identificación de las secuencias.
-    Normalized << "Data ID    ";
+    string first_lines;
 
-    // Por cada número de las secuencias, se crea una categoría para los mismos.
-    // E.g. No. 1, No. 2, No. 3, ...
-    for (int numsPerSeq = 1; numsPerSeq <= 10; numsPerSeq++) {
-        Normalized << setw(ESPACIO - 1) << "No. " << numsPerSeq;
-    }
-    // Se insertan las categorías para los clicks y los números mayores
-    Normalized << setw(ESPACIO) << "Clicks" << setw(ESPACIO) << "Numero Mayor" << endl;
-    
-    // Se inserta una línea para separar las categorías de la data.
-    Normalized << string(180, '=') << endl;
-    
+    getline(Secuencias, first_lines);
+    Normalized << first_lines << endl;
+
+    getline(Secuencias, first_lines);
+    Normalized << first_lines << endl;
+
     // Normalizar números por secuencia.
     for (int n = 1; n <= num_sec; n++) {
         Normalized << "Secuencia #" << n;  // Se inserta el número de la secuencia.
