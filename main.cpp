@@ -1,18 +1,3 @@
-/*
- *
- *  main.cpp
- *
- *  José C. Sánchez Curet
- *  Carlos Hernández
- *  Pablo Puig
- *
- *
- *  Purpose: This program generate random columns and rows of numbers (based on user's input)
- *            - Calculate the amount of time the random numbers on each row take to be generated
- *            - Pick the maximum number per row to then normalized all the random numbers
- *            - Create a file per random numbers generated and normalized numbers.
- */
-
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -22,71 +7,66 @@
 
 using namespace std;
 
+
 #define ESPACIO 14
+#define NUMS_POR_SEC 10
 
-/*
- *
- *  PROTOTYPES
- *
- */
+void makeFilenames(fstream &, fstream &);
+void makeSequences(fstream &, int, long int [][NUMS_POR_SEC + 2]);
+void getSequences(fstream &, fstream &, int, long int [][NUMS_POR_SEC + 2]);
+int userSequence();
 
-int userSequence();  // Receive user's input to generate rows
-string makeSequences(int);  // Produce random sequence and save on file based on user's input
-void getSequences(string, int);  // use makeSequences results to normalize sequence and save into another file
-
-
-/*
- *
- *  main Function
- *
- */
 
 int main() {
-    srand((unsigned)time(0));  // Se comienza una nueva semilla.
+    srand((unsigned)time(0));
 
     int numberOfSeqs;
+    fstream SeqsFile;
+    fstream NormlicedFile;
 
-    numberOfSeqs = userSequence();  // Se asigna el número de secuencias.
+    numberOfSeqs = userSequence();
 
-    // Esta función toma como argumentos el archivo para las secuencias
-    // y el número de secuencias.
-    getSequences(makeSequences(numberOfSeqs), numberOfSeqs);
+    long int RandNums[numberOfSeqs][NUMS_POR_SEC + 2];
+
+    makeFilenames(SeqsFile, NormlicedFile);
+    makeSequences(SeqsFile, numberOfSeqs, RandNums);
+    getSequences(SeqsFile, NormlicedFile, numberOfSeqs, RandNums);
 
     return 0;
 }
 
-/*
- *
- *  userSequence Function
- *
- */
 
 int userSequence() {
     int num_seq;
     cout << "Ingrese el numero de secuencias:" << endl;
-    cin >> num_seq;                             // user's input of number of sequences
+    cin >> num_seq;
     return num_seq;
 }
 
-/*
- *
- *  makeSequences Function
- *
- */
 
-string makeSequences(int num_sec) {
+void makeFilenames(fstream &Secuencias, fstream &Normalizadas) {
     string seqFilename;
+    string normlicedFilename;
+
     cout << endl << "Ingrese el nombre del archivo"
     << " en donde desea guardar las secuencias:" << endl;
-    cin >> seqFilename;                                // user's input of filename
+    cin >> seqFilename;
 
-    ofstream Secuencias;
-    Secuencias.open(seqFilename + ".txt");         // Ajusta el tipo del archivo.
+    cout << endl << "Ingrese el nombre del archivo"
+    << " en donde desea guardar las secuencias normalizadas:" << endl;
+    cin >> normlicedFilename;
+    
+    Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
+    Normalizadas.open(normlicedFilename + ".txt", fstream::out);
+}
 
+
+void makeSequences(fstream &Secuencias, int num_sec, long int RandArray[][NUMS_POR_SEC + 2]) {
     Secuencias << "Data ID    ";
     for (int numsPerSeq = 1; numsPerSeq <= 10; numsPerSeq++) {
         Secuencias << setw(ESPACIO - 1) << "No. " << numsPerSeq;
-    }                                                // Producing time it takes to produce sequences
+    } 
+
     Secuencias << setw(ESPACIO) << "Clicks" << setw(ESPACIO) << "Numero Mayor" << endl;
     Secuencias << string(180, '=') << endl;
 
@@ -100,68 +80,50 @@ string makeSequences(int num_sec) {
                 mayor = random_number;
             }
             Secuencias << setw(ESPACIO) << random_number;
+
+            RandArray[i - 1][j - 1] = random_number;
         }
-        Secuencias << setw(ESPACIO) << "{Clicks}";
+        Secuencias << setw(ESPACIO) << 0;
         Secuencias << setw(ESPACIO) << mayor;
+        RandArray[i - 1][10] = 0;
+        RandArray[i - 1][11] = mayor;
         if (i != num_sec) {Secuencias << endl;}
     }
-    Secuencias.close();
-    return seqFilename;
 }
 
-/*
- *
- *  getSequences Function
- *
- */
 
-void getSequences(string secFileName, int num_sec) {
-    fstream Secuencias;
-    Secuencias.open(secFileName + ".txt");            // Ajusta el tipo del archivo.
-
-    string nrmlzFileName;  // Nombre del archivo para las secuencias normalizadas.
-    cout << endl << "Ingrese el nombre del archivo"
-    << " en donde desea guardar las secuencias normalizadas:" << endl;
-    cin >> nrmlzFileName;
-
-    ofstream Normalized;  // Se crea un objeto para el archivo de las secs. normalizadas
-    Normalized.open(nrmlzFileName + ".txt");  // y se crea el archivo según el nombre provisto.
+void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long int RandArray[][NUMS_POR_SEC + 2]) {
+    Secuencias.seekg(0, ios::beg);
 
     string first_lines;
+    getline(Secuencias, first_lines);
+    Normalizadas << first_lines << endl;
 
     getline(Secuencias, first_lines);
-    Normalized << first_lines << endl;
-
-    getline(Secuencias, first_lines);
-    Normalized << first_lines << endl;
+    Normalizadas << first_lines << endl;
 
     // Normalizar números por secuencia.
-    for (int n = 1; n <= num_sec; n++) {
-        Normalized << "Secuencia #" << n;  // Se inserta el número de la secuencia.
+    for (int n = 1; n <= num_secs; n++) {
+        Normalizadas << "Secuencia #" << n;  // Se inserta el número de la secuencia.
         
-        string resto_secs;
-        double mayor;
-        Secuencias.seekg(175, ios::cur);  // Va a donde se encuentra el número mayor.
-        Secuencias >> mayor;
-        
-        Secuencias.seekg(-160, ios::cur); // Va al primero número de la enésima secuencia.
-
+        double mayor = RandArray[n - 1][11];
         double currNum;
         for (int x = 1; x <= 10; x++) {
-            Secuencias >> currNum;  // Se lee el número x de la secuencia n.
+            // Secuencias >> currNum;  // Se lee el número x de la secuencia n.
+            currNum = RandArray[n - 1][x - 1];
     
             // Logging:
             // cout << "Num " << x << "    " << currNum << "    " << currNum << '/' << mayor;
             // cout << endl;
     
             // Se guarda la división del número x y el número mayor de la secuencia
-            Normalized << setw(ESPACIO) << currNum/mayor;  // en el archivo del objeto 'Normalized'.
+            Normalizadas << setw(ESPACIO) << currNum/mayor;  // en el archivo del objeto 'Normalizadas'.
         }
-        getline(Secuencias, resto_secs);
-        Normalized << resto_secs;
-        if (n != num_sec)  // Si se está interando por la última
-            Normalized << endl; // secuencia, entonces no insertar una línea en blanco (al final).
+        Normalizadas << setw(ESPACIO) << RandArray[n - 1][10];
+        Normalizadas << setw(ESPACIO) << RandArray[n - 1][11];
+        if (n != num_secs)  // Si se está interando por la última secuencia,
+            Normalizadas << endl;  // entonces no insertar una línea en blanco (al final).
     }
     Secuencias.close();
-    Normalized.close();
+    Normalizadas.close();
 }
