@@ -93,7 +93,7 @@ string makeSequences(int num_sec) {
     for (int i = 1; i <= num_sec; i++) {
         Secuencias << "Secuencia #" << i;
         int mayor = -1;
-        for (int j = 1; j <= 10; j++) {                 // 10 es el número de núms. rands. por secs.
+        for (int j = 1; j <= 10; j++) { // 10 es el número de núms. rands. por secs.
             int random_number = rand();
 
             if (random_number > mayor) {
@@ -139,7 +139,7 @@ void getSequences(string secFileName, int num_sec) {
     for (int n = 1; n <= num_sec; n++) {
         Normalized << "Secuencia #" << n;  // Se inserta el número de la secuencia.
         
-        string trash;
+        string resto_secs;
         double mayor;
         Secuencias.seekg(175, ios::cur);  // Va a donde se encuentra el número mayor.
         Secuencias >> mayor;
@@ -157,8 +157,8 @@ void getSequences(string secFileName, int num_sec) {
             // Se guarda la división del número x y el número mayor de la secuencia
             Normalized << setw(ESPACIO) << currNum/mayor;  // en el archivo del objeto 'Normalized'.
         }
-        getline(Secuencias, trash);
-        Normalized << trash;
+        getline(Secuencias, resto_secs);
+        Normalized << resto_secs;
         if (n != num_sec)  // Si se está interando por la última
             Normalized << endl; // secuencia, entonces no insertar una línea en blanco (al final).
     }
