@@ -9,7 +9,7 @@ using namespace std;
 
 #define ESPACIO 14
 
-void getFilenames(fstream &, fstream &);
+void makeFilenames(fstream &, fstream &);
 
 void makeSequences(fstream &, int);
 void getSequences(fstream &, fstream &, int);
@@ -25,7 +25,7 @@ int main() {
 
     numberOfSeqs = userSequence();
 
-    getFilenames(SeqsFile, NormlicedFile);
+    makeFilenames(SeqsFile, NormlicedFile);
     makeSequences(SeqsFile, numberOfSeqs);
     getSequences(SeqsFile, NormlicedFile, numberOfSeqs);
 
@@ -41,7 +41,7 @@ int userSequence() {
 }
 
 
-void getFilenames(fstream &Secuencias, fstream &Normalizadas) {
+void makeFilenames(fstream &Secuencias, fstream &Normalizadas) {
     string seqFilename;
     string normlicedFilename;
 
