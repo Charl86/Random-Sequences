@@ -29,8 +29,6 @@ int main() {
     makeSequences(SeqsFile, numberOfSeqs);
     getSequences(SeqsFile, NormlicedFile, numberOfSeqs);
 
-    SeqsFile.close();
-    NormlicedFile.close();
     return 0;
 }
 
@@ -84,7 +82,6 @@ void makeSequences(fstream &Secuencias, int num_sec) {
         Secuencias << setw(ESPACIO) << mayor;
         if (i != num_sec) {Secuencias << endl;}
     }
-    // Secuencias.close();
 }
 
 
@@ -125,4 +122,6 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs) {
         if (n != num_secs)  // Si se está interando por la última
             Normalizadas << endl; // secuencia, entonces no insertar una línea en blanco (al final).
     }
+    Secuencias.close();
+    Normalizadas.close();
 }
