@@ -7,12 +7,13 @@
 
 using namespace std;
 
+
 #define ESPACIO 14
+#define NUMS_POR_SEC 10
 
 void makeFilenames(fstream &, fstream &);
-
-void makeSequences(fstream &, int);
-void getSequences(fstream &, fstream &, int);
+void makeSequences(fstream &, int, long int [][NUMS_POR_SEC + 2]);
+void getSequences(fstream &, fstream &, int, long int [][NUMS_POR_SEC + 2]);
 int userSequence();
 
 
@@ -25,9 +26,11 @@ int main() {
 
     numberOfSeqs = userSequence();
 
+    long int RandNums[numberOfSeqs][NUMS_POR_SEC + 2];
+
     makeFilenames(SeqsFile, NormlicedFile);
-    makeSequences(SeqsFile, numberOfSeqs);
-    getSequences(SeqsFile, NormlicedFile, numberOfSeqs);
+    makeSequences(SeqsFile, numberOfSeqs, RandNums);
+    getSequences(SeqsFile, NormlicedFile, numberOfSeqs, RandNums);
 
     return 0;
 }
@@ -58,7 +61,7 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas) {
 }
 
 
-void makeSequences(fstream &Secuencias, int num_sec) {
+void makeSequences(fstream &Secuencias, int num_sec, long int RandArray[][NUMS_POR_SEC + 2]) {
     Secuencias << "Data ID    ";
     for (int numsPerSeq = 1; numsPerSeq <= 10; numsPerSeq++) {
         Secuencias << setw(ESPACIO - 1) << "No. " << numsPerSeq;
@@ -77,15 +80,19 @@ void makeSequences(fstream &Secuencias, int num_sec) {
                 mayor = random_number;
             }
             Secuencias << setw(ESPACIO) << random_number;
+
+            RandArray[i - 1][j - 1] = random_number;
         }
-        Secuencias << setw(ESPACIO) << "{Clicks}";
+        Secuencias << setw(ESPACIO) << 0;
         Secuencias << setw(ESPACIO) << mayor;
+        RandArray[i - 1][10] = 0;
+        RandArray[i - 1][11] = mayor;
         if (i != num_sec) {Secuencias << endl;}
     }
 }
 
 
-void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs) {
+void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long int RandArray[][NUMS_POR_SEC + 2]) {
     Secuencias.seekg(0, ios::beg);
 
     string first_lines;
@@ -99,28 +106,23 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs) {
     for (int n = 1; n <= num_secs; n++) {
         Normalizadas << "Secuencia #" << n;  // Se inserta el número de la secuencia.
         
-        string resto_secs;
-        double mayor;
-        Secuencias.seekg(173, ios::cur);  // Va a donde se encuentra el número mayor.
-        Secuencias >> mayor;
-        
-        Secuencias.seekg(-162, ios::cur); // Va al primero número de la enésima secuencia.
-
+        double mayor = RandArray[n - 1][11];
         double currNum;
         for (int x = 1; x <= 10; x++) {
-            Secuencias >> currNum;  // Se lee el número x de la secuencia n.
+            // Secuencias >> currNum;  // Se lee el número x de la secuencia n.
+            currNum = RandArray[n - 1][x - 1];
     
-            Logging:
-            cout << "Num " << x << "    " << currNum << "    " << currNum << '/' << mayor;
-            cout << endl;
+            // Logging:
+            // cout << "Num " << x << "    " << currNum << "    " << currNum << '/' << mayor;
+            // cout << endl;
     
             // Se guarda la división del número x y el número mayor de la secuencia
             Normalizadas << setw(ESPACIO) << currNum/mayor;  // en el archivo del objeto 'Normalizadas'.
         }
-        getline(Secuencias, resto_secs);
-        Normalizadas << resto_secs;
-        if (n != num_secs)  // Si se está interando por la última
-            Normalizadas << endl; // secuencia, entonces no insertar una línea en blanco (al final).
+        Normalizadas << setw(ESPACIO) << RandArray[n - 1][10];
+        Normalizadas << setw(ESPACIO) << RandArray[n - 1][11];
+        if (n != num_secs)  // Si se está interando por la última secuencia,
+            Normalizadas << endl;  // entonces no insertar una línea en blanco (al final).
     }
     Secuencias.close();
     Normalizadas.close();
