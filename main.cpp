@@ -8,7 +8,7 @@
 using namespace std;
 
 
-#define ESPACIO 14
+#define ESPACIO 12
 #define NUMS_POR_SEC 10
 
 void makeFilenames(fstream &, fstream &);
@@ -31,7 +31,6 @@ int main() {
     makeFilenames(SeqsFile, NormlicedFile);
     makeSequences(SeqsFile, numberOfSeqs, RandNums);
     getSequences(SeqsFile, NormlicedFile, numberOfSeqs, RandNums);
-
     return 0;
 }
 
@@ -62,16 +61,8 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas) {
 
 
 void makeSequences(fstream &Secuencias, int num_sec, long int RandArray[][NUMS_POR_SEC + 2]) {
-    Secuencias << "Data ID    ";
-    for (int numsPerSeq = 1; numsPerSeq <= 10; numsPerSeq++) {
-        Secuencias << setw(ESPACIO - 1) << "No. " << numsPerSeq;
-    } 
-
-    Secuencias << setw(ESPACIO) << "Clicks" << setw(ESPACIO) << "Numero Mayor" << endl;
-    Secuencias << string(180, '=') << endl;
-
     for (int i = 1; i <= num_sec; i++) {
-        Secuencias << "Secuencia #" << i;
+        Secuencias << setw(9) << "dataID#" << i;
         int mayor = -1;
         for (int j = 1; j <= 10; j++) { // 10 es el número de núms. rands. por secs.
             int random_number = rand();
@@ -95,16 +86,9 @@ void makeSequences(fstream &Secuencias, int num_sec, long int RandArray[][NUMS_P
 void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long int RandArray[][NUMS_POR_SEC + 2]) {
     Secuencias.seekg(0, ios::beg);
 
-    string first_lines;
-    getline(Secuencias, first_lines);
-    Normalizadas << first_lines << endl;
-
-    getline(Secuencias, first_lines);
-    Normalizadas << first_lines << endl;
-
     // Normalizar números por secuencia.
     for (int n = 1; n <= num_secs; n++) {
-        Normalizadas << "Secuencia #" << n;  // Se inserta el número de la secuencia.
+        Normalizadas << setw(9) << "dataID#" << n;  // Se inserta el número de la secuencia.
         
         double mayor = RandArray[n - 1][11];
         double currNum;
