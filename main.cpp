@@ -86,9 +86,16 @@ void makeSequences(fstream &Secuencias, int num_sec, long int RandArray[][NUMS_P
 void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long int RandArray[][NUMS_POR_SEC + 2]) {
     Secuencias.seekg(0, ios::beg);
 
+    Normalizadas << setw(10) << "dataID";
+    for (int i = 1; i <= 10; i++)
+        Normalizadas << setw(11) <<"Value_" << i;
+    Normalizadas << endl;
+    Normalizadas << string(155, '-') << endl;
+
     // Normalizar números por secuencia.
     for (int n = 1; n <= num_secs; n++) {
-        Normalizadas << setw(9) << "dataID#" << n;  // Se inserta el número de la secuencia.
+        // Se inserta el identificador de la secuencia, separada por un espacio específico, seguido de los números.
+        Normalizadas << setw(9 - (to_string(n).length() - 1)) << "dataID#" << n;
         
         double mayor = RandArray[n - 1][11];
         double currNum;
