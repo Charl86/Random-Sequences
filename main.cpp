@@ -15,7 +15,7 @@ void makeFilenames(fstream &, fstream &);
 void makeSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);
 void getSequences(fstream &, fstream &, int, long double [][5][NUMS_POR_SEC]);
 int userSequence();
-double calDeviation(long double [][5][NUMS_POR_SEC], int, int);
+double calDeviation(long double [][5][NUMS_POR_SEC], int, double);
 
 
 int main() {
@@ -86,57 +86,57 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
     Secuencias.seekg(0, ios::beg);
 
     Normalizadas << setw(10) << "dataID";
-    for (int i = 1; i <= NUMS_POR_SEC; i++)
+    for (int i = 0; i < NUMS_POR_SEC; i++)
         Normalizadas << setw(11) <<"Value_" << i;
 
     Normalizadas << setw(11) << "Mean" << setw(12) << "StdDev";
     Normalizadas << endl << string(155, '-') << endl;
 
     // Normalizar números por secuencia.
-    for (int n = 1; n <= num_secs; n++) {
+    for (int n = 0; n < num_secs; n++) {
         // Se inserta el identificador de la secuencia, separada por un espacio específico, seguido de los números.
         Normalizadas << setw(9 - (to_string(n).length() - 1)) << "dataID#" << n;
         
         double nrmlzCurrNum;
-        double mayor = RandArray[n - 1][2][0];
+        double mayor = RandArray[n][2][0];
         double media = 0.0;
         double deviation = 0.0;
-        for (int x = 1; x <= NUMS_POR_SEC; x++) {
-            nrmlzCurrNum = RandArray[n - 1][0][x - 1]/(mayor);
+        for (int x = 0; x < NUMS_POR_SEC; x++) {
+            nrmlzCurrNum = RandArray[n][0][x]/(mayor);
             media += nrmlzCurrNum;
     
             // Logging:
             // cout << "Num " << x << "    " << currNum << "    " << currNum << '/' << mayor;
             // cout << endl;
-    
+
             // Se guarda la división del número x y el número mayor de la secuencia
+            RandArray[n][0][x] = nrmlzCurrNum;
             Normalizadas << setw(ESPACIO) << nrmlzCurrNum;  // en el archivo del objeto 'Normalizadas'.
         }
         // Normalizadas << setw(ESPACIO) << RandArray[n - 1][1][0];
         // Normalizadas << setw(ESPACIO) << RandArray[n - 1][2][0];
         media = media/NUMS_POR_SEC;
-        deviation = calDeviation(RandArray, n - 1, media);
+        deviation = calDeviation(RandArray, n, media);
 
-        RandArray[n - 1][3][0] = media;
-        RandArray[n - 1][4][0] = media;
+        RandArray[n][3][0] = media;
+        RandArray[n][4][0] = deviation;
 
-        Normalizadas << setw(ESPACIO) << RandArray[n - 1][3][0];
-        Normalizadas << setw(ESPACIO) << RandArray[n - 1][4][0];
-        if (n != num_secs)  // Si se está interando por la última secuencia,
+        Normalizadas << setw(ESPACIO) << RandArray[n][3][0];
+        Normalizadas << setw(ESPACIO) << RandArray[n][4][0];
+        if (n != num_secs - 1)  // Si se está interando por la última secuencia,
             Normalizadas << endl;  // entonces no insertar una línea en blanco (al final).
     }
     Secuencias.close();
     Normalizadas.close();
 }
 
-double calDeviation(long double RandArray[][5][NUMS_POR_SEC], int seq_idx, int seq_mean) {
-    double raw_StdDeviation = 0.0;
-    double actual_Deviation = 0.0;
+double calDeviation(long double RandArray[][5][NUMS_POR_SEC], int seq_idx, double seq_mean) {
+    double std_deviation = 0.0;
 
-    for (int i = 1; i <= NUMS_POR_SEC; i++) {
-        raw_StdDeviation += pow(RandArray[seq_idx][0][i] - seq_mean, 2);
-        actual_Deviation += raw_StdDeviation;
+    for (int i = 0; i < NUMS_POR_SEC; i++) {
+        std_deviation += pow(RandArray[seq_idx][0][i] - seq_mean, 2);
     }
-    actual_Deviation = sqrt(actual_Deviation/NUMS_POR_SEC);
-    return actual_Deviation;
+
+    std_deviation = sqrt(std_deviation/NUMS_POR_SEC);
+    return std_deviation;
 }
