@@ -8,6 +8,9 @@
 # Ignore exe files:
 *.exe
 
+# Ignore files starting with 'test'
+Test*
+
 # Keep on ignoring:
 /files*number*generator.*
 /Doodle.*
