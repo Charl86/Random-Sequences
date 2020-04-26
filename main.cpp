@@ -20,6 +20,7 @@ int userSequence();
 double calcDeviation(long double [][5][NUMS_POR_SEC], int, double);
 string lowerCase(string);
 void readSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);
+bool askReadFile();
 
 int main() {
     srand((unsigned)time(0));
@@ -52,15 +53,11 @@ int userSequence() {
 }
 
 void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile) {
-    string create_newFile;
+    string answerReadFile;
     string seqFilename;
     string normlicedFilename;
 
-    cout << "Desea leer las secuencias de un archivo existente?" << endl;
-    cin >> create_newFile;
-
-    if (lowerCase(create_newFile) == "yes" || lowerCase(create_newFile) == "y"
-    || lowerCase(create_newFile) == "si" || create_newFile == "1") {
+    if (askReadFile()) {
         readFile = true;
         cout << endl << "Ingrese el nombre del archivo que desea leer" << endl;
     }
@@ -148,16 +145,13 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
             nrmlzCurrNum = RandArray[n][0][x]/(mayor);
             media += nrmlzCurrNum;
     
-            // Logging:
-            // cout << "Num " << x << "    " << currNum << "    " << currNum << '/' << mayor;
-            // cout << endl;
-
             // Se guarda la división del número x y el número mayor de la secuencia
             RandArray[n][0][x] = nrmlzCurrNum;
             Normalizadas << setw(ESPACIO) << nrmlzCurrNum;  // en el archivo del objeto 'Normalizadas'.
         }
         // Normalizadas << setw(ESPACIO) << RandArray[n - 1][1][0];
         // Normalizadas << setw(ESPACIO) << RandArray[n - 1][2][0];
+
         media = media/NUMS_POR_SEC;
         deviation = calcDeviation(RandArray, n, media);
 
@@ -191,4 +185,23 @@ string lowerCase(string word) {
         lowered[i] = tolower(word[i]);
     }
     return lowered;
+}
+
+bool askReadFile() {
+    string answer;
+    // string options[] = {"yes", "si", "1","no", "0"};
+
+    do {
+        cout << endl << "Desea leer las secuencias de un archivo existente?" << endl;
+        cin >> answer;
+        answer = lowerCase(answer);
+        if (answer == "yes" || answer == "y"
+            || answer == "si" || answer == "1")
+                return true;
+        else if (answer == "no" || answer == "0")
+                return false;
+        else {
+            cout << endl << "Por favor, responda con un 'si' o un 'no'.";
+        }
+    } while (1);
 }
