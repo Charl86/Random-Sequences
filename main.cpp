@@ -232,13 +232,16 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
     // línea divisora:
     Normalizadas << endl << string(155, '-') << endl;
 
+    // Se inicializa el número menor arbitrariamente al número mayor de la fila 0.
+    double menor = RandArray[0][2][0];
+    int menor_pos[2] = {0};
     // Para cada secuencia
     for (int n = 0; n < num_secs; n++) {
         // se inserta una cantidad de espacios específica, seguidos por el dataID
         Normalizadas << setw(9 - (to_string(n + 1).length() - 1)) << "dataID#" << (n + 1);
         
         // se obtiene al número mayor de la secuencia respectiva
-        double mayor = RandArray[n][2][0];  
+        double mayor = RandArray[n][2][0];
         double media = 0.0;
         double deviation = 0.0;
         double nrmlzCurrNum;
@@ -250,7 +253,14 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
             nrmlzCurrNum = RandArray[n][0][x]/(mayor);
 
             media += nrmlzCurrNum;  // se añade este número normalizado a la media
-    
+
+            // Si el número menor es mayor que el número normalizado actual, guardar éste último.
+            if (menor > nrmlzCurrNum) {
+                menor = nrmlzCurrNum;
+                menor_pos[0] = n;
+                menor_pos[1] = x;
+            }
+
             // se guarda el número normalizado en el arreglo
             RandArray[n][0][x] = nrmlzCurrNum;
             // y se inserta en el archivo de las secuencias normalizadas.
@@ -275,7 +285,13 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
         Normalizadas << setw(ESPACIO) << RandArray[n][3][0];
         Normalizadas << setw(ESPACIO) << RandArray[n][4][0];
         // Si no se itera por la última secuencia, insertar una nueva línea.
-        if (n != num_secs - 1) { Normalizadas << endl; }
+        if (n + 1 != num_secs) { Normalizadas << endl; }
+        // Si esta era la última línea
+        else {
+            // Desplegar el número menor de todas las secuencias.
+            Normalizadas << string(2, '\n') << "Minimum value of all sequences is: " << menor << ", found"
+            << " on column " << (menor_pos[1] + 1) << " of sequence number " << (menor_pos[0] + 1);
+        }
     }
 }
 
