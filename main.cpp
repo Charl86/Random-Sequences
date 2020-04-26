@@ -67,21 +67,46 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile) {
         << " en donde desea guardar las secuencias:" << endl;
     }
     cin >> seqFilename;
+    if (readFile) {
+        Secuencias.open(seqFilename + ".txt");
+        
+        while (!Secuencias.is_open()) {
+            cout << endl << "El archivo que ha ingresado no existe. Asegurese de que el archivo"
+            << endl << "exista o que haya escrito su nombre correctamente." << endl;
+            cin >> seqFilename;
+            Secuencias.open(seqFilename + ".txt");
+        }
+    }
+    else
+        Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
 
     cout << endl << "Ingrese el nombre del archivo"
     << " en donde desea guardar las secuencias normalizadas:" << endl;
     cin >> normlicedFilename;
-    
-    if (readFile)
-        Secuencias.open(seqFilename + ".txt", fstream::in | fstream::app);
-    else
-        Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
     Normalizadas.open(normlicedFilename + ".txt", fstream::out);
+}
+
+bool askReadFile() {
+    string answer;
+
+    do {
+        cout << endl << "Desea leer las secuencias de un archivo existente?" << endl;
+        cin >> answer;
+        answer = lowerCase(answer);
+        if (answer == "yes" || answer == "y"
+            || answer == "si" || answer == "1")
+                return true;
+        else if (answer == "no" || answer == "0")
+                return false;
+        else {
+            cout << endl << "Por favor, responda con un 'si' o un 'no'.";
+        }
+    } while (1);
 }
 
 void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][NUMS_POR_SEC]) {
     for (int i = 1; i <= num_sec; i++) {
-        Secuencias << setw(9) << "dataID#" << i;
+        Secuencias << setw(9) << "dataID#" << (i + 1);
 
         int mayor = -1;
         for (int j = 1; j <= NUMS_POR_SEC; j++) {  // 10 es el número de núms. rands. por secs.
@@ -103,13 +128,16 @@ void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
 }
 
 void readSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][NUMS_POR_SEC]) {
-    for (int i = 0; i < num_sec; i++) {
-        Secuencias.seekg(16, ios::cur);
+    string id_text;
+    int random_number;
+    double clicks;
+    int mayor;
 
-        int random_number;
-        double clicks;
-        int mayor;
-        string rest_of_line;
+    for (int i = 0; i < num_sec; i++) {
+        // Secuencias.seekg(16, ios::cur);
+
+        Secuencias >> id_text;
+
         for (int j = 0; j < NUMS_POR_SEC; j++) {
             Secuencias >> random_number;
             RandArray[i][0][j] = random_number;
@@ -127,7 +155,7 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
 
     Normalizadas << setw(10) << "dataID";
     for (int i = 0; i < NUMS_POR_SEC; i++)
-        Normalizadas << setw(11) <<"Value_" << i;
+        Normalizadas << setw(11) <<"Value_" << (i + 1);
 
     Normalizadas << setw(11) << "Mean" << setw(12) << "StdDev";
     Normalizadas << endl << string(155, '-') << endl;
@@ -135,7 +163,7 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
     // Normalizar números por secuencia.
     for (int n = 0; n < num_secs; n++) {
         // Se inserta el identificador de la secuencia, separada por un espacio específico, seguido de los números.
-        Normalizadas << setw(9 - (to_string(n).length() - 1)) << "dataID#" << n;
+        Normalizadas << setw(9 - (to_string(n + 1).length() - 1)) << "dataID#" << (n + 1);
         
         double nrmlzCurrNum;
         double mayor = RandArray[n][2][0];
@@ -185,23 +213,4 @@ string lowerCase(string word) {
         lowered[i] = tolower(word[i]);
     }
     return lowered;
-}
-
-bool askReadFile() {
-    string answer;
-    // string options[] = {"yes", "si", "1","no", "0"};
-
-    do {
-        cout << endl << "Desea leer las secuencias de un archivo existente?" << endl;
-        cin >> answer;
-        answer = lowerCase(answer);
-        if (answer == "yes" || answer == "y"
-            || answer == "si" || answer == "1")
-                return true;
-        else if (answer == "no" || answer == "0")
-                return false;
-        else {
-            cout << endl << "Por favor, responda con un 'si' o un 'no'.";
-        }
-    } while (1);
 }
