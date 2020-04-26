@@ -11,17 +11,21 @@ using namespace std;
 #define ESPACIO 12
 #define NUMS_POR_SEC 10
 
-void makeFilenames(fstream &, fstream &);
+void makeFilenames(fstream &, fstream &, bool &);
 void makeSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);
 void getSequences(fstream &, fstream &, int, long double [][5][NUMS_POR_SEC]);
 int userSequence();
-double calDeviation(long double [][5][NUMS_POR_SEC], int, double);
 
+// Nuevas funciones creadas:
+double calcDeviation(long double [][5][NUMS_POR_SEC], int, double);
+string lowerCase(string);
+void readSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);
 
 int main() {
     srand((unsigned)time(0));
 
     int numberOfSeqs;
+    bool readFile;
     fstream SeqsFile;
     fstream NormlicedFile;
 
@@ -29,8 +33,12 @@ int main() {
 
     long double RandNums[numberOfSeqs][5][NUMS_POR_SEC];
 
-    makeFilenames(SeqsFile, NormlicedFile);
-    makeSequences(SeqsFile, numberOfSeqs, RandNums);
+    makeFilenames(SeqsFile, NormlicedFile, readFile);
+    if (readFile)
+        readSequences(SeqsFile, numberOfSeqs, RandNums);
+    else
+        makeSequences(SeqsFile, numberOfSeqs, RandNums);
+
     getSequences(SeqsFile, NormlicedFile, numberOfSeqs, RandNums);
     return 0;
 }
@@ -38,24 +46,39 @@ int main() {
 
 int userSequence() {
     int num_seq;
-    cout << "Ingrese el numero de secuencias:" << endl;
+    cout << "Ingrese el numero de secuencias a crear (o leer):" << endl;
     cin >> num_seq;
     return num_seq;
 }
 
-void makeFilenames(fstream &Secuencias, fstream &Normalizadas) {
+void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile) {
+    string create_newFile;
     string seqFilename;
     string normlicedFilename;
 
-    cout << endl << "Ingrese el nombre del archivo"
-    << " en donde desea guardar las secuencias:" << endl;
+    cout << "Desea leer las secuencias de un archivo existente?" << endl;
+    cin >> create_newFile;
+
+    if (lowerCase(create_newFile) == "yes" || lowerCase(create_newFile) == "y"
+    || lowerCase(create_newFile) == "si" || create_newFile == "1") {
+        readFile = true;
+        cout << endl << "Ingrese el nombre del archivo que desea leer" << endl;
+    }
+    else {
+        readFile = false;
+        cout << endl << "Ingrese el nombre del archivo"
+        << " en donde desea guardar las secuencias:" << endl;
+    }
     cin >> seqFilename;
 
     cout << endl << "Ingrese el nombre del archivo"
     << " en donde desea guardar las secuencias normalizadas:" << endl;
     cin >> normlicedFilename;
     
-    Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
+    if (readFile)
+        Secuencias.open(seqFilename + ".txt", fstream::in | fstream::app);
+    else
+        Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
     Normalizadas.open(normlicedFilename + ".txt", fstream::out);
 }
 
@@ -79,6 +102,26 @@ void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
         RandArray[i - 1][1][0] = 0;
         RandArray[i - 1][2][0] = mayor;
         if (i != num_sec) {Secuencias << endl;}
+    }
+}
+
+void readSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][NUMS_POR_SEC]) {
+    for (int i = 0; i < num_sec; i++) {
+        Secuencias.seekg(16, ios::cur);
+
+        int random_number;
+        double clicks;
+        int mayor;
+        string rest_of_line;
+        for (int j = 0; j < NUMS_POR_SEC; j++) {
+            Secuencias >> random_number;
+            RandArray[i][0][j] = random_number;
+        }
+        Secuencias >> clicks;
+        Secuencias >> mayor;
+
+        RandArray[i][1][0] = clicks;
+        RandArray[i][2][0] = mayor;
     }
 }
 
@@ -116,7 +159,7 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
         // Normalizadas << setw(ESPACIO) << RandArray[n - 1][1][0];
         // Normalizadas << setw(ESPACIO) << RandArray[n - 1][2][0];
         media = media/NUMS_POR_SEC;
-        deviation = calDeviation(RandArray, n, media);
+        deviation = calcDeviation(RandArray, n, media);
 
         RandArray[n][3][0] = media;
         RandArray[n][4][0] = deviation;
@@ -130,7 +173,7 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
     Normalizadas.close();
 }
 
-double calDeviation(long double RandArray[][5][NUMS_POR_SEC], int seq_idx, double seq_mean) {
+double calcDeviation(long double RandArray[][5][NUMS_POR_SEC], int seq_idx, double seq_mean) {
     double std_deviation = 0.0;
 
     for (int i = 0; i < NUMS_POR_SEC; i++) {
@@ -139,4 +182,13 @@ double calDeviation(long double RandArray[][5][NUMS_POR_SEC], int seq_idx, doubl
 
     std_deviation = sqrt(std_deviation/NUMS_POR_SEC);
     return std_deviation;
+}
+
+string lowerCase(string word) {
+    char lowered[word.length()];
+
+    for (int i = 0; i < word.length(); i++) {
+        lowered[i] = tolower(word[i]);
+    }
+    return lowered;
 }
