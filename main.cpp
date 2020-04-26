@@ -194,9 +194,7 @@ void readSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
 
     // Por cada secuencia
     for (int i = 0; i < num_sec; i++) {
-        // Secuencias.seekg(16, ios::cur);
-
-        // Se guarda el dataID de la secuencia en su variable respectiva.
+        // Se lee el dataID. Si no está el dataID, se debe comentar esta línea de código.
         Secuencias >> id_text;
 
         // Por cada número random
