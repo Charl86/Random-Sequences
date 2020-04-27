@@ -39,6 +39,7 @@ int main() {
         arreglo[] = {
             {{rand(1), rand(2), ...}, {clicks}, {núm_mayor}, {media}, {deviación}},  // Secuencia 1
             {{rand(7), rand(4), ...}, {clicks}, {núm_mayor}, {media}, {deviación}},  // Secuencia 2
+            {{rand(4), rand(10), ...}, {clicks}, {núm_mayor}, {media}, {deviación}},  // Secuencia 3
             ...
         }
 
