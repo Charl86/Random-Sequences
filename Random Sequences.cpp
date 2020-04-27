@@ -18,7 +18,7 @@ void getSequences(fstream &, fstream &, int, long double [][5][NUMS_POR_SEC]);  
 
 // Nuevas funciones implementadas:
 double calcDeviation(long double [][5][NUMS_POR_SEC], int, double);  // Calcula la deviación estándar.
-string lowerCase(string);  // Devuelve el string provisto en lowercase
+string lowerCase(string);  // Devuelve el string provisto en lowercase.
 void readSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);  // Lee las secuencias de un archivo existente.
 bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear uno nuevo para las secuencias.
 
