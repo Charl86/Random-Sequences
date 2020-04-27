@@ -23,7 +23,7 @@ void readSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);  // Lee las
 bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear uno nuevo para las secuencias.
 
 int main() {
-    srand((unsigned)time(0));  // Comienza una nueva semilla.
+    srand((unsigned)time(0));  // Comienza una nueva semilla para los números randoms.
 
     int numberOfSeqs;  // Número de secuencias a crear (o leer).
     bool readFile;  // 'true' si se va a leer un archivo existente.
