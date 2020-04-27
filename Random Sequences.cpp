@@ -4,6 +4,7 @@
 #include <cmath>
 #include <ctime>
 #include <string>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -151,6 +152,9 @@ bool askReadFile() {
 
 void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][NUMS_POR_SEC]) {
     // Función para crear las secuencias de números random.
+    
+    struct timespec start, end;  // Variables para comenzar y terminar el 'cronómetro'.
+    double clicks;  // Variable para calcular los clicks.
 
     // Por cada secuencia hasta el número de secuencias provisto
     for (int i = 0; i < num_sec; i++) {
@@ -159,6 +163,9 @@ void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
 
         // Crea una variable para el número mayor inicializado a -1.
         int mayor = RandArray[i][0][0];
+
+        clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
+        ios_base::sync_with_stdio(false);
         for (int j = 0; j < NUMS_POR_SEC; j++) {  // Por cada número random nuevo 10 veces
             int random_number = rand();  // Se crea un número random
 
@@ -172,10 +179,18 @@ void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
             // Se guarda el número random en el arreglo, en la fila i columna j.
             RandArray[i][0][j] = random_number;
         }
-        Secuencias << setw(ESPACIO) << 0;  // Clicks.
-        Secuencias << setw(ESPACIO) << mayor;  // Se inserta el número mayor.
+        clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
+        
+        // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
+        clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
-        RandArray[i][1][0] = 0;  // Clicks.
+        // Se desplegan los clicks.
+        Secuencias << setw(ESPACIO) << fixed << clicks << defaultfloat;
+        // Se desplega el número mayor.
+        Secuencias << setw(ESPACIO) << mayor;
+
+        // Se guardan los clicks en la fila i, en el arreglo a la derecha de los números random.
+        RandArray[i][1][0] = clicks;
 
         // Se guarda el número mayor en la fila i, en el arreglo a la derecha de los clicks.
         RandArray[i][2][0] = mayor;  
@@ -195,7 +210,7 @@ void readSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
 
     // Por cada secuencia
     for (int i = 0; i < num_sec; i++) {
-        // Se lee el dataID. Si no está el dataID, se debe comentar esta línea de código.
+        // Se lee el dataID. Si no hay dataIDs, se debe comentar esta línea de código.
         Secuencias >> id_text;
 
         // Por cada número random
@@ -267,9 +282,6 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
             // y se inserta en el archivo de las secuencias normalizadas.
             Normalizadas << setw(ESPACIO) << nrmlzCurrNum;  
         }
-        // Normalizadas << setw(ESPACIO) << RandArray[n - 1][1][0];
-        // Normalizadas << setw(ESPACIO) << RandArray[n - 1][2][0];
-
         /* Se calcula la media como la suma de los números normalizados
         divididos por la cantidad de los mismos. */
         media = media/NUMS_POR_SEC;
