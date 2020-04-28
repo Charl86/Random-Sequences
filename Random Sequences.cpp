@@ -126,7 +126,7 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, i
         // Cuenta las líneas que hay en el archivo para leer.
         int Secuencias_lineCount = countLines(Secuencias);
 
-        // Si el número de secuencias a leer es menor que el número de líneas que hay en el archivo
+        // Si el número de secuencias a leer es no menor que el número de líneas que hay en el archivo
         while (!(numSeqs <= Secuencias_lineCount)) {
             /* desplega un mensaje que le indica al usuario que ingrese un número de secuencias a leer
             mayor que el número de líneas disponibles en el archivo */
