@@ -23,7 +23,7 @@ using namespace std;
 #define NUMS_POR_SEC 10
 
 int userSequence();  // Devuelve el número de secuencias a ser creadas (o leidas).
-void makeFilenames(fstream &, fstream &, bool &);  // Crea los archivos.
+void makeFilenames(fstream &, fstream &, bool &, int &);  // Crea los archivos.
 void makeSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);  // Crea las secuencias.
 void getSequences(fstream &, fstream &, int, long double [][5][NUMS_POR_SEC]);  // Normaliza las secuencias.
 
@@ -32,6 +32,7 @@ double calcDeviation(long double [][5][NUMS_POR_SEC], int, double);  // Calcula 
 string lowerCase(string);  // Devuelve el string provisto en lowercase.
 void readSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);  // Lee las secuencias de un archivo existente.
 bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear uno nuevo para las secuencias.
+int countLines(fstream &);
 
 int main() {
     srand((unsigned)time(0));  // Comienza una nueva semilla para los números randoms.
@@ -63,7 +64,7 @@ int main() {
                                                                         a la hora de normalizar la secuencia).
     */
 
-    makeFilenames(SeqsFile, NormlicedFile, readFile);  // Crea los archivos.
+    makeFilenames(SeqsFile, NormlicedFile, readFile, numberOfSeqs);  // Crea los archivos.
 
     if (readFile)  // Si readFile es cierto; es decir, si se va a leer un archivo
         // se leen los archivos.
@@ -90,7 +91,7 @@ int userSequence() {
     return num_seq;  // y se devuelve.
 }
 
-void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile) {
+void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, int &numSeqs) {
     string answerReadFile;  // Respuesta a si se desea leer un archivo.
     string seqFilename;  // Nombre del archivo con las secuencias sin normalizar.
     string normlicedFilename;  // Nombre del archivo con las secuencias normalizadas.
@@ -121,6 +122,18 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile) {
             // y preguntarle el nombre otra vez.
             cin >> seqFilename;
             Secuencias.open(seqFilename + ".txt");
+        }
+        // Cuenta las líneas que hay en el archivo para leer.
+        int Secuencias_lineCount = countLines(Secuencias);
+
+        // Si el número de secuencias a leer es menor que el número de líneas que hay en el archivo
+        while (!(numSeqs <= Secuencias_lineCount)) {
+            /* desplega un mensaje que le indica al usuario que ingrese un número de secuencias a leer
+            mayor que el número de líneas disponibles en el archivo */
+            cout << endl << "El numero de lineas a leer no puede ser menor que el numerio de secuencias"
+            << " en el archivo provisto." << endl << "Ingrese un numero de secuencias mayor o igual a "
+            << Secuencias_lineCount << ":" << endl;
+            cin >> numSeqs;  // y se guarda el nuevo número.
         }
     }
     else  // Si no se va a leer un archivo
@@ -350,4 +363,17 @@ string lowerCase(string word) {
     /* Devolver el arreglo. Como es un arreglo de caracteres, no se devuelve la
     dirección (y el tipo de la función es string). */
     return lowered;
+}
+
+int countLines(fstream &readFile) {
+    // Función para contar las líneas en el archivo readFile.
+
+    string nth_line;
+    int count = 0;
+
+    // Mientras haya una línea disponible para ser guardada en nth_line
+    while (getline(readFile, nth_line)) {
+        count += 1;  // sumar 1 al contador.
+    }
+    return count;
 }
