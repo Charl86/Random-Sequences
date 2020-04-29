@@ -124,9 +124,6 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, i
             cin >> seqFilename;
             Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in);
         }
-        /* Por alguna razón, esta parte del código hace que deje de normalizar las secuencias correctamente.
-        No sé porqué ocurre el error, pero sin este código no se va a poder contar el # de líneas del archivo.
-        De lo contrario, el  programa corre normal sin este código. *******************************************/
 
         // Cuenta las líneas que hay en el archivo para leer.
         int Secuencias_lineCount = countLines(Secuencias);
@@ -229,7 +226,8 @@ void makeSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_
 }
 
 void readSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_POR_SEC]) {
-    Secuencias.clear();
+    Secuencias.clear();  // Se borra el flag de eof() para poder leer el file nuevamente.
+    // Se va al principio del archivo antes de comenzar a leer las secuencias.
     Secuencias.seekg(0, ios::beg);
     // Función para leer las secuencias de un archivo existente.
 
@@ -265,7 +263,7 @@ void readSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_
 void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, double RandArray[][5][NUMS_POR_SEC]) {
     // Función para normalizar las secuencias.
 
-    // Por ninguna razón, se va al principio del archivo.
+    // Se va al principio del archivo antes de comenzar a leer las secuencias.
     Secuencias.seekg(0, ios::beg);
 
     // Inserción del header:
@@ -378,9 +376,6 @@ int countLines(fstream  &readFile) {
     double numbers;
     int count = 0;
 
-    /* Por alguna razón, esta línea de código original cambia los decimales a notación científica.
-    No funciona el poder contar las líneas del archivo como se espera. Sin esta función el programa corre
-    normalmente. */
     // Mientras haya una línea disponible para ser guardada en nth_line
     while (getline(readFile, nth_line))
         count += 1;  // sumar 1 al contador.
