@@ -24,13 +24,13 @@ using namespace std;
 
 int userSequence();  // Devuelve el número de secuencias a ser creadas (o leidas).
 void makeFilenames(fstream &, fstream &, bool &, int &);  // Crea los archivos.
-void makeSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);  // Crea las secuencias.
-void getSequences(fstream &, fstream &, int, long double [][5][NUMS_POR_SEC]);  // Normaliza las secuencias.
+void makeSequences(fstream &, int, double [][5][NUMS_POR_SEC]);  // Crea las secuencias.
+void getSequences(fstream &, fstream &, int, double [][5][NUMS_POR_SEC]);  // Normaliza las secuencias.
 
 // Nuevas funciones implementadas:
-double calcDeviation(long double [][5][NUMS_POR_SEC], int, double);  // Calcula la desviación estándar.
+double calcDeviation(double [][5][NUMS_POR_SEC], int, double);  // Calcula la desviación estándar.
 string lowerCase(string);  // Devuelve el string provisto en lowercase.
-void readSequences(fstream &, int, long double [][5][NUMS_POR_SEC]);  // Lee las secuencias de un archivo existente.
+void readSequences(fstream &, int, double [][5][NUMS_POR_SEC]);  // Lee las secuencias de un archivo existente.
 bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear uno nuevo para las secuencias.
 int countLines(fstream &);
 
@@ -46,7 +46,7 @@ int main() {
     se guarda en ésta variable. */
     numberOfSeqs = userSequence();
 
-    long double RandNums[numberOfSeqs][5][NUMS_POR_SEC];
+    double RandNums[numberOfSeqs][5][NUMS_POR_SEC];
     /* Se crea un arreglo de 3 dimensiones de la siguiente manera. Ejemplo:
         arreglo[] = {
             {{rand(1), rand(2), ...}, {clicks}, {núm_mayor}, {media}, {desviación}},  // Secuencia 1
@@ -112,7 +112,8 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, i
     if (readFile) {  // Si se va a leer un archivo
 
         // abrir el archivo sin borrar su contenido previo
-        Secuencias.open(seqFilename + ".txt");
+        // Secuencias.open(seqFilename + ".txt");
+        Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in);
         
         // validar que el nombre provisto del archivo exista.
         while (!Secuencias.is_open()) {  // Si no existe, dejarle saber al usuario que no existe
@@ -121,11 +122,14 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, i
 
             // y preguntarle el nombre otra vez.
             cin >> seqFilename;
-            Secuencias.open(seqFilename + ".txt");
+            Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in);
         }
+        /* Por alguna razón, esta parte del código hace que deje de normalizar las secuencias correctamente.
+        No sé porqué ocurre el error, pero sin este código no se va a poder contar el # de líneas del archivo.
+        De lo contrario, el  programa corre normal sin este código. *******************************************/
+
         // Cuenta las líneas que hay en el archivo para leer.
         int Secuencias_lineCount = countLines(Secuencias);
-
         // Si el número de secuencias a leer es no menor que el número de líneas que hay en el archivo
         while (!(numSeqs <= Secuencias_lineCount)) {
             /* desplega un mensaje que le indica al usuario que ingrese un número de secuencias a leer
@@ -174,7 +178,7 @@ bool askReadFile() {
                      responda correctamente. */
 }
 
-void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][NUMS_POR_SEC]) {
+void makeSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_POR_SEC]) {
     // Función para crear las secuencias de números random.
     
     struct timespec start, end;  // Variables para comenzar y terminar el 'cronómetro'.
@@ -224,7 +228,9 @@ void makeSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
     }
 }
 
-void readSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][NUMS_POR_SEC]) {
+void readSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_POR_SEC]) {
+    Secuencias.clear();
+    Secuencias.seekg(0, ios::beg);
     // Función para leer las secuencias de un archivo existente.
 
     string id_text;  // Variable para el dataID.
@@ -243,7 +249,7 @@ void readSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
             Secuencias >> random_number;
 
             // y luego se guarda en el arreglo, en la fila i columna j.
-            RandArray[i][0][j] = random_number;
+            RandArray[i][0][j] = static_cast<double>(random_number);
         }
         // Se leen los clicks y el número mayor
         Secuencias >> clicks;
@@ -252,11 +258,11 @@ void readSequences(fstream &Secuencias, int num_sec, long double RandArray[][5][
         /* y se guardan en el arreglo, después de los números randoms de la
         secuencia i. */
         RandArray[i][1][0] = clicks;
-        RandArray[i][2][0] = mayor;
+        RandArray[i][2][0] = static_cast<double>(mayor);
     }
 }
 
-void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long double RandArray[][5][NUMS_POR_SEC]) {
+void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, double RandArray[][5][NUMS_POR_SEC]) {
     // Función para normalizar las secuencias.
 
     // Por ninguna razón, se va al principio del archivo.
@@ -332,7 +338,7 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, long
     }
 }
 
-double calcDeviation(long double RandArray[][5][NUMS_POR_SEC], int seq_idx, double seq_mean) {
+double calcDeviation(double RandArray[][5][NUMS_POR_SEC], int seq_idx, double seq_mean) {
     // Función para calcular la desviación de la secuencia 'sec_idx' con la media 'seq_mean'.
 
     double std_deviation = 0.0;  // Se inicializa la desviación.
@@ -365,15 +371,19 @@ string lowerCase(string word) {
     return lowered;
 }
 
-int countLines(fstream &readFile) {
+int countLines(fstream  &readFile) {
     // Función para contar las líneas en el archivo readFile.
 
     string nth_line;
+    double numbers;
     int count = 0;
 
+    /* Por alguna razón, esta línea de código original cambia los decimales a notación científica.
+    No funciona el poder contar las líneas del archivo como se espera. Sin esta función el programa corre
+    normalmente. */
     // Mientras haya una línea disponible para ser guardada en nth_line
-    while (getline(readFile, nth_line)) {
+    while (getline(readFile, nth_line))
         count += 1;  // sumar 1 al contador.
-    }
+
     return count;
 }
