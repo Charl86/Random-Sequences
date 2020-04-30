@@ -131,8 +131,8 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, i
         while (!(numSeqs <= Secuencias_lineCount)) {
             /* desplega un mensaje que le indica al usuario que ingrese un número de secuencias a leer
             mayor que el número de líneas disponibles en el archivo */
-            cout << endl << "El numero de lineas a leer no puede ser menor que el numerio de secuencias"
-            << " en el archivo provisto." << endl << "Ingrese un numero de secuencias mayor o igual a "
+            cout << endl << "El numero de filas a leer no puede ser mayor que el numerio de filas"
+            << " en el archivo provisto." << endl << "Ingrese un numero de filas menor o igual a "
             << Secuencias_lineCount << ":" << endl;
             cin >> numSeqs;  // y se guarda el nuevo número.
         }
