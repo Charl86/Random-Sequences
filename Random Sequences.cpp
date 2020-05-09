@@ -22,17 +22,28 @@ using namespace std;
 #define ESPACIO 12
 #define NUMS_POR_SEC 10
 
+struct Sequence {
+    string dataID;
+    double rand_numbers[NUMS_POR_SEC];
+    double mayor;
+    double media;
+    double stdDev;
+    double clicks;
+    double nrmlz_numbers[NUMS_POR_SEC];
+};
+
 int userSequence();  // Devuelve el número de secuencias a ser creadas (o leidas).
 void makeFilenames(fstream &, fstream &, bool &, int &);  // Crea los archivos.
-void makeSequences(fstream &, int, double [][5][NUMS_POR_SEC]);  // Crea las secuencias.
-void getSequences(fstream &, fstream &, int, double [][5][NUMS_POR_SEC]);  // Normaliza las secuencias.
+void makeSequences(fstream &, int, Sequence []);  // Crea las secuencias.
+void getSequences(fstream &, fstream &, int, Sequence []);  // Normaliza las secuencias.
 
 // Nuevas funciones implementadas:
-double calcDeviation(double [][5][NUMS_POR_SEC], int, double);  // Calcula la desviación estándar.
+double calcDeviation(double [], double);  // Calcula la desviación estándar.
 string lowerCase(string);  // Devuelve el string provisto en lowercase.
-void readSequences(fstream &, int, double [][5][NUMS_POR_SEC]);  // Lee las secuencias de un archivo existente.
+void readSequences(fstream &, int, Sequence []);  // Lee las secuencias de un archivo existente.
 bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear uno nuevo para las secuencias.
 int countLines(fstream &);
+
 
 int main() {
     srand((unsigned)time(0));  // Comienza una nueva semilla para los números randoms.
@@ -46,36 +57,20 @@ int main() {
     se guarda en ésta variable. */
     numberOfSeqs = userSequence();
 
-    double RandNums[numberOfSeqs][5][NUMS_POR_SEC];
-    /* Se crea un arreglo de 3 dimensiones de la siguiente manera. Ejemplo:
-        arreglo[] = {
-            {{rand(1), rand(2), ...}, {clicks}, {núm_mayor}, {media}, {desviación}},  // Secuencia 1
-            {{rand(7), rand(4), ...}, {clicks}, {núm_mayor}, {media}, {desviación}},  // Secuencia 2
-            {{rand(4), rand(10), ...}, {clicks}, {núm_mayor}, {media}, {desviación}},  // Secuencia 3
-            ...
-        }
-
-    Más ejemplos:
-        a) arreglo[0][0][n] denota el número n en la columna n, fila 0.
-        b) arreglo[2][0][n] denota el número n en la columna n, fila 2.
-        c) arreglo[2][1][0] denota los clicks de la fila/secuencia 2.
-        d) arreglo[2][2][0] denota el número mayor de la fila/secuencia 2.
-        e) arreglo[2][4][0] denota la desviación en la fila/secuencia 2 (dicha desviación va a ser definida
-                                                                        a la hora de normalizar la secuencia).
-    */
+    Sequence Secuencias[numberOfSeqs];
 
     makeFilenames(SeqsFile, NormlicedFile, readFile, numberOfSeqs);  // Crea los archivos.
 
     if (readFile)  // Si readFile es cierto; es decir, si se va a leer un archivo
         // se leen los archivos.
-        readSequences(SeqsFile, numberOfSeqs, RandNums);
+        readSequences(SeqsFile, numberOfSeqs, Secuencias);
     else
         /* De lo contrario, crear un nuevo archivo y crear nuevas secuencias
         / dentro del mismo. */
-        makeSequences(SeqsFile, numberOfSeqs, RandNums);
+        makeSequences(SeqsFile, numberOfSeqs, Secuencias);
 
     // Normalizar las secuencias.
-    getSequences(SeqsFile, NormlicedFile, numberOfSeqs, RandNums);
+    getSequences(SeqsFile, NormlicedFile, numberOfSeqs, Secuencias);
 
     // Cerrar los archivos.
     SeqsFile.close();
@@ -91,7 +86,7 @@ int userSequence() {
     return num_seq;  // y se devuelve.
 }
 
-void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, int &numSeqs) {
+void makeFilenames(fstream &fileSeqs, fstream &fileNorms, bool &readFile, int &numSeqs) {
     string answerReadFile;  // Respuesta a si se desea leer un archivo.
     string seqFilename;  // Nombre del archivo con las secuencias sin normalizar.
     string normlicedFilename;  // Nombre del archivo con las secuencias normalizadas.
@@ -112,21 +107,21 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, i
     if (readFile) {  // Si se va a leer un archivo
 
         // abrir el archivo sin borrar su contenido previo
-        // Secuencias.open(seqFilename + ".txt");
-        Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in);
+        // fileSeqs.open(seqFilename + ".txt");
+        fileSeqs.open(seqFilename + ".txt", fstream::out | fstream::in);
         
         // validar que el nombre provisto del archivo exista.
-        while (!Secuencias.is_open()) {  // Si no existe, dejarle saber al usuario que no existe
+        while (!fileSeqs.is_open()) {  // Si no existe, dejarle saber al usuario que no existe
             cout << endl << "El archivo que ha ingresado no existe. Asegurese de que el archivo"
             << endl << "exista o que haya escrito su nombre correctamente." << endl;
 
             // y preguntarle el nombre otra vez.
             cin >> seqFilename;
-            Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in);
+            fileSeqs.open(seqFilename + ".txt", fstream::out | fstream::in);
         }
 
         // Cuenta las líneas que hay en el archivo para leer.
-        int Secuencias_lineCount = countLines(Secuencias);
+        int Secuencias_lineCount = countLines(fileSeqs);
         // Si el número de secuencias a leer es no menor que el número de líneas que hay en el archivo
         while (!(numSeqs <= Secuencias_lineCount)) {
             /* desplega un mensaje que le indica al usuario que ingrese un número de secuencias a leer
@@ -140,13 +135,13 @@ void makeFilenames(fstream &Secuencias, fstream &Normalizadas, bool &readFile, i
     else  // Si no se va a leer un archivo
         /* crear un nuevo archivo con el nombre provisto si el mismo no existe,
         o borrar el contenido del archivo con el mismo nombre si el mismo ya existe. */
-        Secuencias.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
+        fileSeqs.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
 
     // Preguntar por el nombre del archivo para las secuencias normalizadas.
     cout << endl << "Ingrese el nombre del archivo"
     << " en donde desea guardar las secuencias normalizadas:" << endl;
     cin >> normlicedFilename;  // Guardar la respuesta en la variable.
-    Normalizadas.open(normlicedFilename + ".txt", fstream::out);  // Abrir el archivo con el nombre dado.
+    fileNorms.open(normlicedFilename + ".txt", fstream::out);  // Abrir el archivo con el nombre dado.
 }
 
 bool askReadFile() {
@@ -175,7 +170,7 @@ bool askReadFile() {
                      responda correctamente. */
 }
 
-void makeSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_POR_SEC]) {
+void makeSequences(fstream &fileSeqs, int num_sec, Sequence arrSecuencias[]) {
     // Función para crear las secuencias de números random.
     
     struct timespec start, end;  // Variables para comenzar y terminar el 'cronómetro'.
@@ -184,10 +179,11 @@ void makeSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_
     // Por cada secuencia hasta el número de secuencias provisto
     for (int i = 0; i < num_sec; i++) {
         // Inserta un dataID para cada secuencia
-        Secuencias << setw(9) << "dataID#" << (i + 1);
+        fileSeqs << setw(9) << "dataID#" << (i + 1);
+        arrSecuencias[i].dataID = "dataID#" + to_string(i + 1);
 
         // Crea una variable para el número mayor inicializado a -1.
-        int mayor = RandArray[i][0][0];
+        int mayor = -1;
 
         clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
         ios_base::sync_with_stdio(false);
@@ -200,9 +196,9 @@ void makeSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_
                 mayor = random_number;
             
             // Se inserta una cantidad de espacios, seguidos por el número random creado.
-            Secuencias << setw(ESPACIO) << random_number;
+            fileSeqs << setw(ESPACIO) << random_number;
             // Se guarda el número random en el arreglo, en la fila i columna j.
-            RandArray[i][0][j] = random_number;
+            arrSecuencias[i].rand_numbers[j] = random_number;
         }
         clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
         
@@ -210,25 +206,25 @@ void makeSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_
         clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
         // Se desplegan los clicks.
-        Secuencias << setw(ESPACIO) << fixed << clicks << defaultfloat;
+        fileSeqs << setw(ESPACIO) << fixed << clicks << defaultfloat;
         // Se desplega el número mayor.
-        Secuencias << setw(ESPACIO) << mayor;
+        fileSeqs << setw(ESPACIO) << mayor;
 
         // Se guardan los clicks en la fila i, en el arreglo a la derecha de los números random.
-        RandArray[i][1][0] = clicks;
+        arrSecuencias[i].clicks = clicks;
 
         // Se guarda el número mayor en la fila i, en el arreglo a la derecha de los clicks.
-        RandArray[i][2][0] = mayor;  
+        arrSecuencias[i].mayor = mayor;  
 
         // Si no se itera por la última secuencia, insertar una nueva línea.
-        if (i != num_sec) {Secuencias << endl;}
+        if (i != num_sec) {fileSeqs << endl;}
     }
 }
 
-void readSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_POR_SEC]) {
-    Secuencias.clear();  // Se borra el flag de eof() para poder leer el file nuevamente.
+void readSequences(fstream &fileSeqs, int num_sec, Sequence arrSecuencias[]) {
+    fileSeqs.clear();  // Se borra el flag de eof() para poder leer el file nuevamente.
     // Se va al principio del archivo antes de comenzar a leer las secuencias.
-    Secuencias.seekg(0, ios::beg);
+    fileSeqs.seekg(0, ios::beg);
     // Función para leer las secuencias de un archivo existente.
 
     string id_text;  // Variable para el dataID.
@@ -239,53 +235,55 @@ void readSequences(fstream &Secuencias, int num_sec, double RandArray[][5][NUMS_
     // Por cada secuencia
     for (int i = 0; i < num_sec; i++) {
         // Se lee el dataID. Si no hay dataIDs, se debe comentar esta línea de código.
-        Secuencias >> id_text;
+        fileSeqs >> id_text;
+
+        arrSecuencias[i].dataID = id_text;
 
         // Por cada número random
         for (int j = 0; j < NUMS_POR_SEC; j++) {
             // Se lee ese número random y se guarda en la variable
-            Secuencias >> random_number;
+            fileSeqs >> random_number;
 
             // y luego se guarda en el arreglo, en la fila i columna j.
-            RandArray[i][0][j] = static_cast<double>(random_number);
+            arrSecuencias[i].rand_numbers[j] = static_cast<double>(random_number);
         }
         // Se leen los clicks y el número mayor
-        Secuencias >> clicks;
-        Secuencias >> mayor;
+        fileSeqs >> clicks;
+        fileSeqs >> mayor;
 
         /* y se guardan en el arreglo, después de los números randoms de la
         secuencia i. */
-        RandArray[i][1][0] = clicks;
-        RandArray[i][2][0] = static_cast<double>(mayor);
+        arrSecuencias[i].clicks = clicks;
+        arrSecuencias[i].mayor = static_cast<double>(mayor);
     }
 }
 
-void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, double RandArray[][5][NUMS_POR_SEC]) {
+void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, Sequence arrSecuencias[]) {
     // Función para normalizar las secuencias.
 
     // Se va al principio del archivo antes de comenzar a leer las secuencias.
-    Secuencias.seekg(0, ios::beg);
+    fileSeqs.seekg(0, ios::beg);
 
     // Inserción del header:
-    Normalizadas << setw(10) << "dataID";  // header para el dataID
+    fileNorms << setw(10) << "dataID";  // header para el dataID
     for (int i = 0; i < NUMS_POR_SEC; i++)
-        Normalizadas << setw(11) <<"Value_" << (i + 1);  // header para los valores
+        fileNorms << setw(11) <<"Value_" << (i + 1);  // header para los valores
 
     // header para la media y la desviación:
-    Normalizadas << setw(11) << "Mean" << setw(12) << "StdDev";
+    fileNorms << setw(11) << "Mean" << setw(12) << "StdDev";
     // línea divisora:
-    Normalizadas << endl << string(155, '-') << endl;
+    fileNorms << endl << string(155, '-') << endl;
 
-    // Se inicializa el número menor arbitrariamente al número mayor de la fila 0.
-    double menor = RandArray[0][2][0];
+    // Se inicializa el número menor arbitrariamente al número mayor de la primera secuencia.
+    double menor = arrSecuencias[0].mayor;
     int menor_pos[2] = {0};
     // Para cada secuencia
     for (int n = 0; n < num_secs; n++) {
         // se inserta una cantidad de espacios específica, seguidos por el dataID
-        Normalizadas << setw(9 - (to_string(n + 1).length() - 1)) << "dataID#" << (n + 1);
+        fileNorms << setw(9 - (to_string(n + 1).length() - 1)) << arrSecuencias[n].dataID;
         
         // se obtiene al número mayor de la secuencia respectiva
-        double mayor = RandArray[n][2][0];
+        double mayor = arrSecuencias[n].mayor;
         double media = 0.0;
         double deviation = 0.0;
         double nrmlzCurrNum;
@@ -294,7 +292,7 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, doub
         for (int x = 0; x < NUMS_POR_SEC; x++) {
             /* se define el número normalizado como el número random en la fila n, columna x
             dividido por el número mayor de la misma secuencia. */
-            nrmlzCurrNum = RandArray[n][0][x]/(mayor);
+            nrmlzCurrNum = arrSecuencias[n].rand_numbers[x]/(mayor);
 
             media += nrmlzCurrNum;  // se añade este número normalizado a la media
 
@@ -306,37 +304,37 @@ void getSequences(fstream &Secuencias, fstream &Normalizadas, int num_secs, doub
             }
 
             // se guarda el número normalizado en el arreglo
-            RandArray[n][0][x] = nrmlzCurrNum;
+            arrSecuencias[n].nrmlz_numbers[x] = nrmlzCurrNum;
             // y se inserta en el archivo de las secuencias normalizadas.
-            Normalizadas << setw(ESPACIO) << nrmlzCurrNum;  
+            fileNorms << setw(ESPACIO) << nrmlzCurrNum;  
         }
         /* Se calcula la media como la suma de los números normalizados
         divididos por la cantidad de los mismos. */
         media = media/NUMS_POR_SEC;
 
         // Se calcula la desviación dadas una secuencia n y su media.
-        deviation = calcDeviation(RandArray, n, media);
+        deviation = calcDeviation(arrSecuencias[n].nrmlz_numbers, media);
 
         /* Se guardan la media y la desviación en sus propios arreglos, después
         de los números normalizados de la secuencia n, sus clicks y el número mayor. */
-        RandArray[n][3][0] = media;
-        RandArray[n][4][0] = deviation;
+        arrSecuencias[n].media = media;
+        arrSecuencias[n].stdDev = deviation;
 
         // Se desplegan la media y la desviación en el archivo.
-        Normalizadas << setw(ESPACIO) << RandArray[n][3][0];
-        Normalizadas << setw(ESPACIO) << RandArray[n][4][0];
+        fileNorms << setw(ESPACIO) << arrSecuencias[n].media;
+        fileNorms << setw(ESPACIO) << arrSecuencias[n].stdDev;
         // Si no se itera por la última secuencia, insertar una nueva línea.
-        if (n + 1 != num_secs) { Normalizadas << endl; }
+        if (n + 1 != num_secs) { fileNorms << endl; }
         // Si esta era la última línea
         else {
             // Desplegar el número menor de todas las secuencias.
-            Normalizadas << string(2, '\n') << "Minimum value of all sequences is: " << menor << ", found"
+            fileNorms << string(2, '\n') << "Minimum value of all sequences is: " << menor << ", found"
             << " on column " << (menor_pos[1] + 1) << " of sequence number " << (menor_pos[0] + 1);
         }
     }
 }
-
-double calcDeviation(double RandArray[][5][NUMS_POR_SEC], int seq_idx, double seq_mean) {
+                                                                                                          
+double calcDeviation(double randomSeq[], double seq_mean) {
     // Función para calcular la desviación de la secuencia 'sec_idx' con la media 'seq_mean'.
 
     double std_deviation = 0.0;  // Se inicializa la desviación.
@@ -345,7 +343,7 @@ double calcDeviation(double RandArray[][5][NUMS_POR_SEC], int seq_idx, double se
     for (int i = 0; i < NUMS_POR_SEC; i++) {
         /* se cuadra la diferencia entre el número i y la media de la secuencia, y se
         añade a la desviación. */
-        std_deviation += pow(RandArray[seq_idx][0][i] - seq_mean, 2);
+        std_deviation += pow(randomSeq[i] - seq_mean, 2);
     }
     /* Finalmente, se divide la desviación por la cantidad de números por secuencia 
     y se le saca la raíz cuadrada */
