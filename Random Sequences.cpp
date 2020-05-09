@@ -30,7 +30,50 @@ struct Sequence {
     double stdDev;
     double clicks;
     double nrmlz_numbers[NUMS_POR_SEC];
+    
+    double copyNrmls[NUMS_POR_SEC];
+
+    // Métodos:
+    void selectSort();
+    void bubbleSort();
 };
+
+void Sequence::selectSort() {
+    for (int i = 0; i < NUMS_POR_SEC; i++)
+        copyNrmls[i] = nrmlz_numbers[i];
+
+    double smallest;
+    int smallestIdx;
+
+    for (int start = 0; start < NUMS_POR_SEC - 1; start++) {
+        smallest = copyNrmls[start];
+        smallestIdx = start;
+        for (int i = start + 1; i < NUMS_POR_SEC; i++) {
+            if (smallest > copyNrmls[i]) {
+                smallest = copyNrmls[i];
+                smallestIdx = i;
+            }
+        }
+        copyNrmls[smallestIdx] = copyNrmls[start];
+        copyNrmls[start] = smallest;
+    }
+}
+
+void Sequence::bubbleSort() {
+    for (int i = 0; i < NUMS_POR_SEC; i++)
+        copyNrmls[i] = nrmlz_numbers[i];
+
+    bool swapped;
+    do {
+        swapped = false;
+        for (int i = 0; i < NUMS_POR_SEC - 1; i++) {
+            if (copyNrmls[i] > copyNrmls[i + 1]) {
+                swapped = true;
+                swap(copyNrmls[i], copyNrmls[i + 1]);
+            }
+        }
+    } while (swapped);
+}
 
 int userSequence();  // Devuelve el número de secuencias a ser creadas (o leidas).
 void makeFilenames(fstream &, fstream &, bool &, int &);  // Crea los archivos.
@@ -43,6 +86,11 @@ string lowerCase(string);  // Devuelve el string provisto en lowercase.
 void readSequences(fstream &, int, Sequence []);  // Lee las secuencias de un archivo existente.
 bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear uno nuevo para las secuencias.
 int countLines(fstream &);
+
+// Nuevas nuevas funciones implementadas:
+void selectionSort(Sequence [], int, fstream &);
+void bubbleSort(Sequence [], int, fstream &);
+void outSortedArray(Sequence [], int, fstream &, bool =true);
 
 
 int main() {
@@ -262,7 +310,7 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, Sequence 
     // Función para normalizar las secuencias.
 
     // Se va al principio del archivo antes de comenzar a leer las secuencias.
-    fileSeqs.seekg(0, ios::beg);
+    // fileSeqs.seekg(0, ios::beg);
 
     // Inserción del header:
     fileNorms << setw(10) << "dataID";  // header para el dataID
@@ -332,6 +380,9 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, Sequence 
             << " on column " << (menor_pos[1] + 1) << " of sequence number " << (menor_pos[0] + 1);
         }
     }
+
+    selectionSort(arrSecuencias, num_secs, fileNorms);
+    bubbleSort(arrSecuencias, num_secs, fileNorms);
 }
                                                                                                           
 double calcDeviation(double randomSeq[], double seq_mean) {
@@ -349,6 +400,74 @@ double calcDeviation(double randomSeq[], double seq_mean) {
     y se le saca la raíz cuadrada */
     std_deviation = sqrt(std_deviation/NUMS_POR_SEC);
     return std_deviation;  // y se devuelve el resultado.
+}
+
+void selectionSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
+    Sequence copySecuencias[numsOfSeqs];
+    for (int i = 0; i < numsOfSeqs; i++)
+        copySecuencias[i] = arrSecuencias[i];
+
+    Sequence smallestMeanSeq;
+    int sm_meanIdx;
+    for (int start = 0; start < numsOfSeqs - 1; start++) {
+        smallestMeanSeq = copySecuencias[start];
+        sm_meanIdx = start;
+        for (int i = start + 1; i < numsOfSeqs; i++) {
+            if (smallestMeanSeq.media > copySecuencias[i].media) {
+                smallestMeanSeq = copySecuencias[i];
+                sm_meanIdx = i;
+            }
+        }
+        copySecuencias[sm_meanIdx] = copySecuencias[start];
+        copySecuencias[start] = smallestMeanSeq;
+    }
+
+    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
+}
+
+void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
+    Sequence copySecuencias[numsOfSeqs];
+    for (int i = 0; i < numsOfSeqs; i++)
+        copySecuencias[i] = arrSecuencias[i];
+    
+    bool swapped;
+    do {
+        for (int i = 0; i < numsOfSeqs - 1; i++) {
+            if (copySecuencias[i].media > copySecuencias[i + 1].media) {
+                swap(copySecuencias[i], copySecuencias[i + 1]);
+                swapped = true;
+            }
+        }
+    } while (swapped);
+
+    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
+}
+
+void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, bool bubbleSort) {
+    // Initial padding.
+    fileNorms << endl << endl;
+
+    if (bubbleSort)
+        fileNorms << setw(15) << "Arreglo ordenado usando el Bubble Sort" << endl;
+    else
+        fileNorms << setw(15) << "Arreglo ordenado usando el Selection Sort" << endl;
+
+    for (int i = 0; i < numsOfSeqs; i++) {
+        if (bubbleSort)
+            copyArrSeqs[i].bubbleSort();
+        else
+            copyArrSeqs[i].selectSort();
+
+        fileNorms << setw(9 - (to_string(i + 1).length() - 1)) << copyArrSeqs[i].dataID;
+        for (int j = 0; j < NUMS_POR_SEC; j++)
+            fileNorms << setw(ESPACIO) << copyArrSeqs[i].copyNrmls[j];
+
+        fileNorms << setw(ESPACIO) << copyArrSeqs[i].media;
+        fileNorms << setw(ESPACIO) << copyArrSeqs[i].stdDev;
+
+        if (i + 1 != numsOfSeqs)
+            fileNorms << endl;
+    }
 }
 
 string lowerCase(string word) {
