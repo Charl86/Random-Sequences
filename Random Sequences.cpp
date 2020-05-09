@@ -31,7 +31,7 @@ struct Sequence {
     double clicks;
     double nrmlz_numbers[NUMS_POR_SEC];
     
-    double copyNrmls[NUMS_POR_SEC];
+    // double copyNrmls[NUMS_POR_SEC];
 
     // Métodos:
     void selectSort();
@@ -39,37 +39,37 @@ struct Sequence {
 };
 
 void Sequence::selectSort() {
-    for (int i = 0; i < NUMS_POR_SEC; i++)
-        copyNrmls[i] = nrmlz_numbers[i];
+    // for (int i = 0; i < NUMS_POR_SEC; i++)
+    //     copyNrmls[i] = nrmlz_numbers[i];
 
     double smallest;
     int smallestIdx;
 
     for (int start = 0; start < NUMS_POR_SEC - 1; start++) {
-        smallest = copyNrmls[start];
+        smallest = nrmlz_numbers[start];
         smallestIdx = start;
         for (int i = start + 1; i < NUMS_POR_SEC; i++) {
-            if (smallest > copyNrmls[i]) {
-                smallest = copyNrmls[i];
+            if (smallest > nrmlz_numbers[i]) {
+                smallest = nrmlz_numbers[i];
                 smallestIdx = i;
             }
         }
-        copyNrmls[smallestIdx] = copyNrmls[start];
-        copyNrmls[start] = smallest;
+        nrmlz_numbers[smallestIdx] = nrmlz_numbers[start];
+        nrmlz_numbers[start] = smallest;
     }
 }
 
 void Sequence::bubbleSort() {
-    for (int i = 0; i < NUMS_POR_SEC; i++)
-        copyNrmls[i] = nrmlz_numbers[i];
+    // for (int i = 0; i < NUMS_POR_SEC; i++)
+    //     copyNrmls[i] = nrmlz_numbers[i];
 
     bool swapped;
     do {
         swapped = false;
         for (int i = 0; i < NUMS_POR_SEC - 1; i++) {
-            if (copyNrmls[i] > copyNrmls[i + 1]) {
+            if (nrmlz_numbers[i] > nrmlz_numbers[i + 1]) {
                 swapped = true;
-                swap(copyNrmls[i], copyNrmls[i + 1]);
+                swap(nrmlz_numbers[i], nrmlz_numbers[i + 1]);
             }
         }
     } while (swapped);
@@ -88,9 +88,9 @@ bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear u
 int countLines(fstream &);
 
 // Nuevas nuevas funciones implementadas:
+void outSortedArray(Sequence [], int, fstream &, bool =true);
 void selectionSort(Sequence [], int, fstream &);
 void bubbleSort(Sequence [], int, fstream &);
-void outSortedArray(Sequence [], int, fstream &, bool =true);
 
 
 int main() {
@@ -422,7 +422,7 @@ void selectionSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms)
         copySecuencias[start] = smallestMeanSeq;
     }
 
-    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
+    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
 }
 
 void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
@@ -432,6 +432,7 @@ void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
     
     bool swapped;
     do {
+        swapped = false;
         for (int i = 0; i < numsOfSeqs - 1; i++) {
             if (copySecuencias[i].media > copySecuencias[i + 1].media) {
                 swap(copySecuencias[i], copySecuencias[i + 1]);
@@ -440,7 +441,7 @@ void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
         }
     } while (swapped);
 
-    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
+    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
 }
 
 void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, bool bubbleSort) {
@@ -460,7 +461,7 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
 
         fileNorms << setw(9 - (to_string(i + 1).length() - 1)) << copyArrSeqs[i].dataID;
         for (int j = 0; j < NUMS_POR_SEC; j++)
-            fileNorms << setw(ESPACIO) << copyArrSeqs[i].copyNrmls[j];
+            fileNorms << setw(ESPACIO) << copyArrSeqs[i].nrmlz_numbers[j];
 
         fileNorms << setw(ESPACIO) << copyArrSeqs[i].media;
         fileNorms << setw(ESPACIO) << copyArrSeqs[i].stdDev;
