@@ -270,10 +270,11 @@ void makeSequences(fstream &fileSeqs, int num_sec, Sequence arrSecuencias[]) {
 }
 
 void readSequences(fstream &fileSeqs, int num_sec, Sequence arrSecuencias[]) {
+    // Función para leer las secuencias de un archivo existente.
+
     fileSeqs.clear();  // Se borra el flag de eof() para poder leer el file nuevamente.
     // Se va al principio del archivo antes de comenzar a leer las secuencias.
     fileSeqs.seekg(0, ios::beg);
-    // Función para leer las secuencias de un archivo existente.
 
     string id_text;  // Variable para el dataID.
     int random_number;
@@ -406,7 +407,12 @@ void selectionSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms)
     Sequence copySecuencias[numsOfSeqs];
     for (int i = 0; i < numsOfSeqs; i++)
         copySecuencias[i] = arrSecuencias[i];
+    
+    struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
+    double clicks;  // Variable para guardar los clicks.
 
+    clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
+    ios_base::sync_with_stdio(false);
     Sequence smallestMeanSeq;
     int sm_meanIdx;
     for (int start = 0; start < numsOfSeqs - 1; start++) {
@@ -421,6 +427,12 @@ void selectionSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms)
         copySecuencias[sm_meanIdx] = copySecuencias[start];
         copySecuencias[start] = smallestMeanSeq;
     }
+    clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
+    // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
+    clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+
+    cout << endl << "Time taken to Selection Sort the array of sequences was: "
+    << fixed << clicks << endl;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
 }
@@ -429,7 +441,12 @@ void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
     Sequence copySecuencias[numsOfSeqs];
     for (int i = 0; i < numsOfSeqs; i++)
         copySecuencias[i] = arrSecuencias[i];
-    
+
+    struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
+    double clicks;  // Variable para guardar los clicks.
+
+    clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
+    ios_base::sync_with_stdio(false);
     bool swapped;
     do {
         swapped = false;
@@ -440,6 +457,12 @@ void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
             }
         }
     } while (swapped);
+    clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
+    // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
+    clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+
+    cout << endl << "Time taken to Bubble Sort the array of sequences was: "
+    << setw(11) << clicks << endl;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
 }
@@ -453,11 +476,35 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
     else
         fileNorms << setw(15) << "Arreglo ordenado usando el Selection Sort" << endl;
 
+    struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
+    double clicks;  // Variable para guardar los clicks.
     for (int i = 0; i < numsOfSeqs; i++) {
-        if (bubbleSort)
-            copyArrSeqs[i].bubbleSort();
-        else
+        if (!bubbleSort) {
+            clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
+            ios_base::sync_with_stdio(false);
+
             copyArrSeqs[i].selectSort();
+
+            clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
+            // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
+            clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+
+            cout << "Time taken to selection sort sequence No. " << i + 1
+            << " was: " << setw(16) << clicks << endl;
+        }
+        else {
+            clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
+            ios_base::sync_with_stdio(false);
+
+            copyArrSeqs[i].bubbleSort();
+
+            clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
+            // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
+            clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+
+            cout << "Time taken to bubble sort sequence No. " << i + 1
+            << " was: " << setw(19) << clicks << endl;
+        }
 
         fileNorms << setw(9 - (to_string(i + 1).length() - 1)) << copyArrSeqs[i].dataID;
         for (int j = 0; j < NUMS_POR_SEC; j++)
