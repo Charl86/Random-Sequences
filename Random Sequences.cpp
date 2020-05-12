@@ -472,9 +472,12 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
     fileNorms << endl << endl;
 
     if (bubbleSort)
-        fileNorms << setw(15) << "Arreglo ordenado usando el Bubble Sort" << endl;
+        fileNorms << setw(15) << "Sorting with BUBBLE we got:" << endl;
     else
-        fileNorms << setw(15) << "Arreglo ordenado usando el Selection Sort" << endl;
+        fileNorms << setw(15) << "Sorting with SELECTION we got:" << endl;
+
+    fileNorms << setw(10) << "dataID" << setw(131) << "Mean" << endl;
+    fileNorms << string(144, '-') << endl;  // Línea divisora.
 
     struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
     double clicks;  // Variable para guardar los clicks.
@@ -505,16 +508,20 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
             cout << "Time taken to bubble sort sequence No. " << i + 1
             << " was: " << setw(19) << clicks << endl;
         }
-
-        fileNorms << setw(9 - (to_string(i + 1).length() - 1)) << copyArrSeqs[i].dataID;
+        // fileNorms << setw(9 - (to_string(i + 1).length() - 1)) << copyArrSeqs[i].dataID;
+        fileNorms << setw(13) << copyArrSeqs[i].dataID;
         for (int j = 0; j < NUMS_POR_SEC; j++)
             fileNorms << setw(ESPACIO) << copyArrSeqs[i].nrmlz_numbers[j];
 
         fileNorms << setw(ESPACIO) << copyArrSeqs[i].media;
-        fileNorms << setw(ESPACIO) << copyArrSeqs[i].stdDev;
+        // fileNorms << setw(ESPACIO) << copyArrSeqs[i].stdDev;  STD_DEV
 
         if (i + 1 != numsOfSeqs)
             fileNorms << endl;
+    }
+    if (!bubbleSort) {
+        fileNorms << string(2, '\n') << string(144, '-');
+        fileNorms << endl << string(144, '-');
     }
 }
 
