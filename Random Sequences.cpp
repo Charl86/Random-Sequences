@@ -431,8 +431,9 @@ void selectionSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms)
     // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
-    cout << endl << "Time taken to Selection Sort the array of sequences was: "
-    << fixed << clicks << endl;
+    // cout << endl << "Time taken to Selection Sort the array of sequences was: "
+    // << fixed << clicks << endl;
+    cout << endl << "Selection sort took " << fixed << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
 }
@@ -461,8 +462,8 @@ void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
     // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
-    cout << endl << "Time taken to Bubble Sort the array of sequences was: "
-    << setw(11) << clicks << endl;
+    cout << endl << "Bubble sort took " << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
+    // << setw(11) << clicks << endl;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
 }
