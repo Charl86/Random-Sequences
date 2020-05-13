@@ -431,8 +431,6 @@ void selectionSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms)
     // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
-    // cout << endl << "Time taken to Selection Sort the array of sequences was: "
-    // << fixed << clicks << endl;
     cout << endl << "Selection sort took " << fixed << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
@@ -463,7 +461,6 @@ void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
     cout << endl << "Bubble sort took " << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
-    // << setw(11) << clicks << endl;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
 }
@@ -509,13 +506,11 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
             cout << "Time taken to bubble sort sequence No. " << i + 1
             << " was: " << setw(19) << clicks << endl;
         }
-        // fileNorms << setw(9 - (to_string(i + 1).length() - 1)) << copyArrSeqs[i].dataID;
         fileNorms << setw(13) << copyArrSeqs[i].dataID;
         for (int j = 0; j < NUMS_POR_SEC; j++)
             fileNorms << setw(ESPACIO) << copyArrSeqs[i].nrmlz_numbers[j];
 
         fileNorms << setw(ESPACIO) << copyArrSeqs[i].media;
-        // fileNorms << setw(ESPACIO) << copyArrSeqs[i].stdDev;  STD_DEV
 
         if (i + 1 != numsOfSeqs)
             fileNorms << endl;
