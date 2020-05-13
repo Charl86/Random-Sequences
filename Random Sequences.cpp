@@ -21,6 +21,7 @@ using namespace std;
 
 #define ESPACIO 12
 #define NUMS_POR_SEC 10
+#define TABLA_W 30
 
 struct Sequence {
     string dataID;
@@ -382,6 +383,9 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, Sequence 
         }
     }
 
+    cout << endl << "ALGORITMO" << setw(TABLA_W + 20) << "Tiempo en ordenar cada record usando la media"
+    << setw(TABLA_W + 20) << "Tiempo promedio en ordenar cada secuencia";
+
     selectionSort(arrSecuencias, num_secs, fileNorms);
     bubbleSort(arrSecuencias, num_secs, fileNorms);
 }
@@ -431,7 +435,8 @@ void selectionSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms)
     // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
-    cout << endl << "Selection sort took " << fixed << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
+    // cout << endl << "Selection sort took " << fixed << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
+    cout << endl << "SELECTION" << setw(TABLA_W + 3) << fixed << clicks;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
 }
@@ -460,7 +465,8 @@ void bubbleSort(Sequence arrSecuencias[], int numsOfSeqs, fstream &fileNorms) {
     // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
-    cout << endl << "Bubble sort took " << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
+    // cout << endl << "Bubble sort took " << clicks << " secs on average to sort " << numsOfSeqs << " sequences" << endl;
+    cout << endl << "BUBBLE" << setw(TABLA_W + 6) << clicks;
 
     outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
 }
@@ -479,22 +485,19 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
 
     struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
     double clicks;  // Variable para guardar los clicks.
-    double all_clicks[numsOfSeqs];
     double sumOfClicks = 0.0;
     for (int i = 0; i < numsOfSeqs; i++) {
         clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
         ios_base::sync_with_stdio(false);
-        if (!bubbleSort) {
+        if (!bubbleSort)
             copyArrSeqs[i].selectSort();
-        }
-        else {
+        else
             copyArrSeqs[i].bubbleSort();
-        }
+
         clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
         // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
         clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
         sumOfClicks += clicks;
-        // all_clicks[i] = clicks;
 
         fileNorms << setw(13) << copyArrSeqs[i].dataID;
         for (int j = 0; j < NUMS_POR_SEC; j++)
@@ -509,7 +512,8 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
         fileNorms << string(2, '\n') << string(144, '-');
         fileNorms << endl << string(144, '-');
     }
-    cout << "Average time taken ordering all sequences: " << sumOfClicks/numsOfSeqs << endl;
+
+    cout << setw(TABLA_W + 25) << sumOfClicks/numsOfSeqs;
 }
 
 string lowerCase(string word) {
