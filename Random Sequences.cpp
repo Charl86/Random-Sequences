@@ -479,33 +479,23 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
 
     struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
     double clicks;  // Variable para guardar los clicks.
+    double all_clicks[numsOfSeqs];
+    double sumOfClicks = 0.0;
     for (int i = 0; i < numsOfSeqs; i++) {
+        clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
+        ios_base::sync_with_stdio(false);
         if (!bubbleSort) {
-            clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
-            ios_base::sync_with_stdio(false);
-
             copyArrSeqs[i].selectSort();
-
-            clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
-            // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
-            clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-
-            cout << "Time taken to selection sort sequence No. " << i + 1
-            << " was: " << setw(16) << clicks << endl;
         }
         else {
-            clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
-            ios_base::sync_with_stdio(false);
-
             copyArrSeqs[i].bubbleSort();
-
-            clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
-            // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
-            clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-
-            cout << "Time taken to bubble sort sequence No. " << i + 1
-            << " was: " << setw(19) << clicks << endl;
         }
+        clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
+        // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
+        clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
+        sumOfClicks += clicks;
+        // all_clicks[i] = clicks;
+
         fileNorms << setw(13) << copyArrSeqs[i].dataID;
         for (int j = 0; j < NUMS_POR_SEC; j++)
             fileNorms << setw(ESPACIO) << copyArrSeqs[i].nrmlz_numbers[j];
@@ -519,6 +509,7 @@ void outSortedArray(Sequence copyArrSeqs[], int numsOfSeqs, fstream &fileNorms, 
         fileNorms << string(2, '\n') << string(144, '-');
         fileNorms << endl << string(144, '-');
     }
+    cout << "Average time taken ordering all sequences: " << sumOfClicks/numsOfSeqs << endl;
 }
 
 string lowerCase(string word) {
