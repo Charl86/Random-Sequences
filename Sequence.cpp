@@ -1,7 +1,9 @@
-﻿#include "Sequence.h";
+﻿#include "Sequence.h"
 #include <iostream>
-using namespace std;
 
+
+const int ESPACIO = 12;
+const int TABLA_W = 30;
 
 void Sequence::selectSort() {
     double smallest;
@@ -28,7 +30,7 @@ void Sequence::bubbleSort() {
         for (int i = 0; i < NUMS_POR_SEC - 1; i++) {
             if (nrmlz_numbers[i] > nrmlz_numbers[i + 1]) {
                 swapped = true;
-                swap(nrmlz_numbers[i], nrmlz_numbers[i + 1]);
+                std::swap(nrmlz_numbers[i], nrmlz_numbers[i + 1]);
             }
         }
     } while (swapped);

@@ -1,18 +1,19 @@
 ﻿#ifndef SEQUENCE_H
 #define SEQUENCE_H
+#include <iostream>
+
+const int NUMS_POR_SEC = 10;
 
 struct Sequence {
-    string dataID;
-    static const int NUMS_POR_SEC = 10;
-    double rand_numbers[NUMS_POR_SEC];
+    std::string dataID;
     double mayor;
     double media;
     double stdDev;
     double clicks;
+    double rand_numbers[NUMS_POR_SEC];
     double nrmlz_numbers[NUMS_POR_SEC];
 
     // Métodos:
-    Sequence();
     void selectSort();
     void bubbleSort();
 };

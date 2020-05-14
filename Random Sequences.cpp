@@ -8,14 +8,13 @@
     estándar de la secuencia.
 */
 
-#include <iostream>
+#include "Sequence.h"
 #include <iomanip>
 #include <fstream>
 #include <cmath>
 #include <ctime>
 #include <string>
 #include <sys/time.h>
-#include "Sequence.h"
 
 using namespace std;
 
