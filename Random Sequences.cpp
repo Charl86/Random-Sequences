@@ -15,6 +15,7 @@
 #include <ctime>
 #include <string>
 #include <sys/time.h>
+#include "Sequence.h"
 
 using namespace std;
 
@@ -23,58 +24,6 @@ using namespace std;
 #define NUMS_POR_SEC 10
 #define TABLA_W 30
 
-struct Sequence {
-    string dataID;
-    double rand_numbers[NUMS_POR_SEC];
-    double mayor;
-    double media;
-    double stdDev;
-    double clicks;
-    double nrmlz_numbers[NUMS_POR_SEC];
-    
-    // double copyNrmls[NUMS_POR_SEC];
-
-    // Métodos:
-    void selectSort();
-    void bubbleSort();
-};
-
-void Sequence::selectSort() {
-    // for (int i = 0; i < NUMS_POR_SEC; i++)
-    //     copyNrmls[i] = nrmlz_numbers[i];
-
-    double smallest;
-    int smallestIdx;
-
-    for (int start = 0; start < NUMS_POR_SEC - 1; start++) {
-        smallest = nrmlz_numbers[start];
-        smallestIdx = start;
-        for (int i = start + 1; i < NUMS_POR_SEC; i++) {
-            if (smallest > nrmlz_numbers[i]) {
-                smallest = nrmlz_numbers[i];
-                smallestIdx = i;
-            }
-        }
-        nrmlz_numbers[smallestIdx] = nrmlz_numbers[start];
-        nrmlz_numbers[start] = smallest;
-    }
-}
-
-void Sequence::bubbleSort() {
-    // for (int i = 0; i < NUMS_POR_SEC; i++)
-    //     copyNrmls[i] = nrmlz_numbers[i];
-
-    bool swapped;
-    do {
-        swapped = false;
-        for (int i = 0; i < NUMS_POR_SEC - 1; i++) {
-            if (nrmlz_numbers[i] > nrmlz_numbers[i + 1]) {
-                swapped = true;
-                swap(nrmlz_numbers[i], nrmlz_numbers[i + 1]);
-            }
-        }
-    } while (swapped);
-}
 
 int userSequence();  // Devuelve el número de secuencias a ser creadas (o leidas).
 void makeFilenames(fstream &, fstream &, bool &, int &);  // Crea los archivos.
