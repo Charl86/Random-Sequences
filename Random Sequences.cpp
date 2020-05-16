@@ -9,6 +9,7 @@
 */
 
 #include "Sequence.h"
+#include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <cmath>

@@ -2,9 +2,6 @@
 #include <iostream>
 
 
-const int ESPACIO = 12;
-const int TABLA_W = 30;
-
 void Sequence::selectSort() {
     double smallest;
     int smallestIdx;
