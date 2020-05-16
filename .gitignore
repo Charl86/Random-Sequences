@@ -8,8 +8,11 @@
 # Ignore exe files:
 *.exe
 
-# Ignore files starting with 'test'
+# Ignore files starting with 'test':
 Test*
+
+# Ignore files of format 'o':
+*.o
 
 # Keep on ignoring:
 /files*number*generator.*
