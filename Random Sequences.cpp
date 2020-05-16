@@ -8,39 +8,9 @@
     estándar de la secuencia.
 */
 
+
 #include "Sequence.h"
-// #include <iostream>
-// #include <iomanip>
-// #include <fstream>
-// #include <cmath>
 #include <ctime>
-// #include <string>
-// #include <sys/time.h>
-
-using namespace std;
-
-
-// #define ESPACIO 12
-// #define NUMS_POR_SEC 10
-// #define TABLA_W 30
-
-
-// int userSequence();  // Devuelve el número de secuencias a ser creadas (o leidas).
-// void makeFilenames(fstream &, fstream &, bool &, int &);  // Crea los archivos.
-// void makeSequences(fstream &, int, Sequence []);  // Crea las secuencias.
-// void getSequences(fstream &, fstream &, int, Sequence []);  // Normaliza las secuencias.
-
-// // Nuevas funciones implementadas:
-// double calcDeviation(double [], double);  // Calcula la desviación estándar.
-// string lowerCase(string);  // Devuelve el string provisto en lowercase.
-// void readSequences(fstream &, int, Sequence []);  // Lee las secuencias de un archivo existente.
-// bool askReadFile();  // Pregunta si se desea leer un archivo existente o crear uno nuevo para las secuencias.
-// int countLines(fstream &);
-
-// // Nuevas nuevas funciones implementadas:
-// void outSortedArray(Sequence [], int, fstream &, bool =true);
-// void selectionSort(Sequence [], int, fstream &);
-// void bubbleSort(Sequence [], int, fstream &);
 
 
 int main() {
