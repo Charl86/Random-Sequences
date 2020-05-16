@@ -1,10 +1,11 @@
 ﻿#ifndef SEQUENCE_H
 #define SEQUENCE_H
+#include <iostream>
 
 const int NUMS_POR_SEC = 10;
 
 struct Sequence {
-    string dataID;
+    std::string dataID;
     double mayor;
     double media;
     double stdDev;
