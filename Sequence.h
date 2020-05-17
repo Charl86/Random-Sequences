@@ -71,12 +71,12 @@ int countLines(fstream &);
 /* Función que ordena el vector de secuencias utilizando el selection sort algorithm. Toma como argumentos
 el vector de secuencias, el núm. de secuencias y el objeto fstream asociado al archivo de secuencias
 normalizadas. También desplega los clicks que se toma en ordenar el vector. */
-void selectionSort(vector <Sequence> &, int, fstream &);
+void selectionSort(vector <Sequence>, int, fstream &);
 
 /* Función que ordena el vector de secuencias utilizando el bubble sort algorithm. Toma como argumentos
 el vector de secuencias, el núm. de secuencias y el objeto fstream asociado al archivo de secuencias
 normalizadas. También desplega los clicks que se toma en ordenar el vector. */
-void bubbleSort(vector <Sequence> &, int, fstream &);
+void bubbleSort(vector <Sequence>, int, fstream &);
 
 /* Función que se encarga de desplegar (en el archivo) las secuencias del vector ya ordenado. 
 A su vez va ordenando las secuencias una por una, es decir; ordena los números en cada secuencia,
@@ -87,7 +87,7 @@ secuencias normalizadas, y un bool. Este bool determina si para las secuencias s
 bubble sort o el selection sort. De esta manera, no habría necesidad de crear dos funciones aparte,
 para ordenar los números en las secuencias con el bubble y selection sort, sino que el parámetro
 bool determina cuál algoritmo de ordenamiento realizar, y lo demás aplica para ambos algoritmos. */
-void outSortedArray(vector <Sequence> &, int, fstream &, bool =true);
+void outSortedArray(vector <Sequence>, int, fstream &, bool =true);
 
 
 #endif

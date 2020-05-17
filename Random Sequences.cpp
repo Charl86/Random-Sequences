@@ -26,7 +26,7 @@ int main() {
     se guarda en ésta variable. */
     numberOfSeqs = userSequence();
 
-    // Sequence Secuencias[numberOfSeqs];  // Se crea el arreglo de structs tipo 'Sequence'.
+    // Se crea un vector que guarda elementos de tipo 'Sequence', sin ningún elemento.
     vector <Sequence> Secuencias(0);
 
     makeFilenames(SeqsFile, NormlicedFile, readFile, numberOfSeqs);  // Crea los archivos.

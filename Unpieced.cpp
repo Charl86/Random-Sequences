@@ -110,12 +110,12 @@ int countLines(fstream &);
 /* Función que ordena el vector de secuencias utilizando el selection sort algorithm. Toma como argumentos
 el vector de secuencias, el núm. de secuencias y el objeto fstream asociado al archivo de secuencias
 normalizadas. También desplega los clicks que se toma en ordenar el vector. */
-void selectionSort(vector <Sequence> &, int, fstream &);
+void selectionSort(vector <Sequence>, int, fstream &);
 
 /* Función que ordena el vector de secuencias utilizando el bubble sort algorithm. Toma como argumentos
 el vector de secuencias, el núm. de secuencias y el objeto fstream asociado al archivo de secuencias
 normalizadas. También desplega los clicks que se toma en ordenar el vector. */
-void bubbleSort(vector <Sequence> &, int, fstream &);
+void bubbleSort(vector <Sequence>, int, fstream &);
 
 /* Función que se encarga de desplegar (en el archivo) las secuencias del vector ya ordenado. 
 A su vez va ordenando las secuencias una por una, es decir; ordena los números en cada secuencia,
@@ -126,7 +126,7 @@ secuencias normalizadas, y un bool. Este bool determina si para las secuencias s
 bubble sort o el selection sort. De esta manera, no habría necesidad de crear dos funciones aparte,
 para ordenar los números en las secuencias con el bubble y selection sort, sino que el parámetro
 bool determina cuál algoritmo de ordenamiento realizar, y lo demás aplica para ambos algoritmos. */
-void outSortedArray(vector <Sequence> &, int, fstream &, bool =true);
+void outSortedArray(vector <Sequence>, int, fstream &, bool =true);
 
 int main() {
     srand((unsigned)time(0));  // Comienza una nueva semilla para los números randoms.
@@ -140,7 +140,7 @@ int main() {
     se guarda en ésta variable. */
     numberOfSeqs = userSequence();
 
-    // Sequence Secuencias[numberOfSeqs];  // Se crea el arreglo de structs tipo 'Sequence'.
+    // Se crea un vector que guarda elementos de tipo 'Sequence', sin ningún elemento.
     vector <Sequence> Secuencias(0);
 
     makeFilenames(SeqsFile, NormlicedFile, readFile, numberOfSeqs);  // Crea los archivos.
@@ -203,10 +203,11 @@ void makeFilenames(fstream &fileSeqs, fstream &fileNorms, bool &readFile, int &n
             fileSeqs.open(seqFilename + ".txt", fstream::out | fstream::in);
         }
     }
-    else  // Si no se va a leer un archivo
+    else {  // Si no se va a leer un archivo
         /* crear un nuevo archivo con el nombre provisto si el mismo no existe,
         o borrar el contenido del archivo con el mismo nombre si el mismo ya existe. */
         fileSeqs.open(seqFilename + ".txt", fstream::out | fstream::in | fstream::trunc);
+    }
 
     // Preguntar por el nombre del archivo para las secuencias normalizadas.
     cout << endl << "Ingrese el nombre del archivo"
@@ -295,13 +296,8 @@ void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuenc
     }
 }
 
-// void readSequences(fstream &fileSeqs, int num_sec, Sequence arrSecuencias[]) {
 void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &arrSecuencias) {
     // Función para leer las secuencias de un archivo existente.
-
-    // fileSeqs.clear();  // Se borra el flag de     // Método para ordenar el miembro 'nrmlz_numbers' de la secuencia.eof() para poder leer el file nuevamente.
-    // Se va al principio del archivo antes de comenzar a leer las secuencias.
-    fileSeqs.seekg(0, ios::beg);
 
     // Variables para el dataID, el número random, los clicks y el número mayor.
     string id_text;
@@ -428,8 +424,8 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
 
     /* Se desplega el header de 'ALGORITMO' en la tabla (no del archivo), junto con el header
     del tiempo tomado en ordenar el vector de secuencias y a su vez cada secuencia */
-    cout << endl << "ALGORITMO" << setw(TABLA_W + 20) << "Tiempo en ordenar el vector de secuencias usando la media"
-    << setw(TABLA_W + 20) << "Tiempo promedio en ordenar cada secuencia";
+    cout << endl << "ALGORITMO" << setw(TABLA_W + 30) << "Tiempo en ordenar el vector de secuencias usando la media"
+    << setw(TABLA_W + 15) << "Tiempo promedio en ordenar cada secuencia";
 
     // Aplicar el selection sort y el bubble sort en el vector de secuencias.
     selectionSort(arrSecuencias, num_secs, fileNorms);
@@ -453,14 +449,9 @@ double calcDeviation(double randomSeq[], double seq_mean) {
     return std_deviation;  // y se devuelve el resultado.
 }
 
-void selectionSort(vector <Sequence> &arrSecuencias, int numsOfSeqs, fstream &fileNorms) {
+void selectionSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNorms) {
     // Función para ordenar el vector de secuencias usando el selection sort algorithm.
 
-    vector <Sequence> copySecuencias(numsOfSeqs);  // Se crea una copia del vector
-    for (int i = 0; i < numsOfSeqs; i++)  // y se van copiando los elementos a esta nueva copia.
-        copySecuencias[i] = arrSecuencias[i];
-    /* Originalmente se utilizaron arreglos en lugar de vectores. */
-    
     struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
     double clicks;  // Variable para guardar los clicks.
 
@@ -471,16 +462,16 @@ void selectionSort(vector <Sequence> &arrSecuencias, int numsOfSeqs, fstream &fi
     Sequence smallestMeanSeq;
     int sm_meanIdx;
     for (int start = 0; start < numsOfSeqs - 1; start++) {
-        smallestMeanSeq = copySecuencias[start];
+        smallestMeanSeq = arrSecuencias[start];
         sm_meanIdx = start;
         for (int i = start + 1; i < numsOfSeqs; i++) {
-            if (smallestMeanSeq.media > copySecuencias[i].media) {
-                smallestMeanSeq = copySecuencias[i];
+            if (smallestMeanSeq.media > arrSecuencias[i].media) {
+                smallestMeanSeq = arrSecuencias[i];
                 sm_meanIdx = i;
             }
         }
-        copySecuencias[sm_meanIdx] = copySecuencias[start];
-        copySecuencias[start] = smallestMeanSeq;
+        arrSecuencias[sm_meanIdx] = arrSecuencias[start];
+        arrSecuencias[start] = smallestMeanSeq;
     }
     clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
     // Se calculan los clicks.
@@ -490,15 +481,11 @@ void selectionSort(vector <Sequence> &arrSecuencias, int numsOfSeqs, fstream &fi
     cout << endl << "SELECTION" << setw(TABLA_W + 3) << fixed << clicks;
 
     // Se llama la función outsortedArray con la copia de la secuencia.
-    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, false);
+    outSortedArray(arrSecuencias, numsOfSeqs, fileNorms, false);
 }
 
-void bubbleSort(vector <Sequence> &arrSecuencias, int numsOfSeqs, fstream &fileNorms) {
+void bubbleSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNorms) {
     // Función para ordenar el vector de secuencias usando el bubble sort algorithm.
-
-    vector <Sequence> copySecuencias(numsOfSeqs);  // Se crea una copia del vector de secuencias
-    for (int i = 0; i < numsOfSeqs; i++)
-        copySecuencias[i] = arrSecuencias[i];  // y se van copiando los elementos a esa copia.
 
     struct timespec start, end;  // Variables para calcular el tiempo (o clicks).
     double clicks;  // Variable para guardar los clicks.
@@ -512,8 +499,8 @@ void bubbleSort(vector <Sequence> &arrSecuencias, int numsOfSeqs, fstream &fileN
     do {
         swapped = false;
         for (int i = 0; i < numsOfSeqs - 1; i++) {
-            if (copySecuencias[i].media > copySecuencias[i + 1].media) {
-                swap(copySecuencias[i], copySecuencias[i + 1]);
+            if (arrSecuencias[i].media > arrSecuencias[i + 1].media) {
+                swap(arrSecuencias[i], arrSecuencias[i + 1]);
                 swapped = true;
             }
         }
@@ -528,10 +515,10 @@ void bubbleSort(vector <Sequence> &arrSecuencias, int numsOfSeqs, fstream &fileN
     cout << endl << "BUBBLE" << setw(TABLA_W + 6) << clicks;
 
     // Se llama la función outsortedArray con la copia del vector de secuencias.
-    outSortedArray(copySecuencias, numsOfSeqs, fileNorms, true);
+    outSortedArray(arrSecuencias, numsOfSeqs, fileNorms, true);
 }
 
-void outSortedArray(vector <Sequence> &copyArrSeqs, int numsOfSeqs, fstream &fileNorms, bool bubbleSort) {
+void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNorms, bool bubbleSort) {
     /* Función para desplegar los clicks para cada ordenamiento realizado y para poner las secuencias
     ordenadas dentro del archivo de secuencias normalizadas. */
 
@@ -557,10 +544,10 @@ void outSortedArray(vector <Sequence> &copyArrSeqs, int numsOfSeqs, fstream &fil
         clock_gettime(CLOCK_MONOTONIC, &start);  // Comienza el cronómetro.
         ios_base::sync_with_stdio(false);
         if (!bubbleSort) {  // Si no se pasó el bubbleSort como cierto
-            copyArrSeqs[i].selectSort();  // Aplicar el selection sort en la secuencia misma.
+            arrSecuencias[i].selectSort();  // Aplicar el selection sort en la secuencia misma.
         }
         else {  // Si se pasó como cierto, realizar el bubble sort en la secuencia misma.
-            copyArrSeqs[i].bubbleSort();
+            arrSecuencias[i].bubbleSort();
         }
         clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
 
@@ -569,17 +556,17 @@ void outSortedArray(vector <Sequence> &copyArrSeqs, int numsOfSeqs, fstream &fil
         
         sumOfClicks += clicks;  // Se añaden los clicks a ésta variable.
 
-        fileNorms << setw(13) << copyArrSeqs[i].dataID;  // Desplegar el dataID de la secuencia.
+        fileNorms << setw(13) << arrSecuencias[i].dataID;  // Desplegar el dataID de la secuencia.
         
         for (int j = 0; j < NUMS_POR_SEC; j++) {  // Por cada número en la secuencia, se desplega.
             if (j + 1 == NUMS_POR_SEC)
-                fileNorms << setw(ESPACIO - 5) << copyArrSeqs[i].nrmlz_numbers[j];
+                fileNorms << setw(ESPACIO - 5) << arrSecuencias[i].nrmlz_numbers[j];
             else
-                fileNorms << setw(ESPACIO) << copyArrSeqs[i].nrmlz_numbers[j];
+                fileNorms << setw(ESPACIO) << arrSecuencias[i].nrmlz_numbers[j];
         }
 
         // Desplegar la media de la secuencia.
-        fileNorms << setw(ESPACIO + 3) << copyArrSeqs[i].media;
+        fileNorms << setw(ESPACIO + 3) << arrSecuencias[i].media;
 
         // Si no se está interando por la última secuencia, insertar una línea en blanco.
         if (i + 1 != numsOfSeqs)
