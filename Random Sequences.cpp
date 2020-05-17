@@ -11,6 +11,7 @@
 
 #include "Sequence.h"
 #include <ctime>
+#include <vector>
 
 
 int main() {
@@ -25,7 +26,8 @@ int main() {
     se guarda en ésta variable. */
     numberOfSeqs = userSequence();
 
-    Sequence Secuencias[numberOfSeqs];
+    // Sequence Secuencias[numberOfSeqs];  // Se crea el arreglo de structs tipo 'Sequence'.
+    vector <Sequence> Secuencias(0);
 
     makeFilenames(SeqsFile, NormlicedFile, readFile, numberOfSeqs);  // Crea los archivos.
 
