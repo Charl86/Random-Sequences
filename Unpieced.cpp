@@ -424,7 +424,7 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
 
     /* Se desplega el header de 'ALGORITMO' en la tabla (no del archivo), junto con el header
     del tiempo tomado en ordenar el vector de secuencias y a su vez cada secuencia */
-    cout << endl << "ALGORITMO" << setw(TABLA_W + 30) << "Tiempo en ordenar el vector de secuencias usando la media"
+    cout << endl << "ALGORITMO" << setw(TABLA_W + 20) << "Tiempo en ordenar cada record usando la media"
     << setw(TABLA_W + 15) << "Tiempo promedio en ordenar cada secuencia";
 
     // Aplicar el selection sort y el bubble sort en el vector de secuencias.
@@ -578,7 +578,7 @@ void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fi
         fileNorms << endl << string(144, '-');
     }
     // Desplegar el promedio de los clicks en ordenar cada secuencia.
-    cout << setw(TABLA_W + 25) << sumOfClicks/numsOfSeqs;
+    cout << setw(TABLA_W + 18) << sumOfClicks/numsOfSeqs;
 }
 
 string lowerCase(string word) {
