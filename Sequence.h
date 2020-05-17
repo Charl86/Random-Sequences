@@ -1,5 +1,6 @@
 ﻿#ifndef SEQUENCE_H
 #define SEQUENCE_H
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -7,7 +8,7 @@
 using namespace std;
 
 
-const int NUMS_POR_SEC = 10;
+const int NUMS_POR_SEC = 10;  // La cantidad de números por secuencia.
 
 struct Sequence {  // El struct llamado 'Secuencia'
     std::string dataID;  // Miembro dataID, donde se va a guardar el número de la secuencia.
