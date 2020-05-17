@@ -13,7 +13,7 @@ struct Sequence {  // El struct llamado 'Secuencia'
     std::string dataID;  // Miembro dataID, donde se va a guardar el número de la secuencia.
     double mayor;  // El número mayor de la secuencia.
     double media;  // La media de la secuencia.
-    double stdDev;  // La deviación estándar de la secuencia.
+    double stdDev;  // La desviación estándar de la secuencia.
     double clicks;  // Los clicks que se tomaron en producir la secuencia de números randoms.
     double rand_numbers[NUMS_POR_SEC];  // Los números randoms producidos.
     double nrmlz_numbers[NUMS_POR_SEC];  // Los números randoms normalizados.
@@ -44,8 +44,8 @@ void getSequences(fstream &, fstream &, int, vector <Sequence> &);
 
 // Nuevas funciones implementadas:
 
-/* Calcula la deviación estándar de un arreglo de números normalizados. Toma como argumentos
-el arreglo de núms. y su media. Devuelve la deviación estándar. */
+/* Calcula la desviación estándar de un arreglo de números normalizados. Toma como argumentos
+el arreglo de núms. y su media. Devuelve la desviación estándar. */
 double calcDeviation(double [], double);
 
 /* Recibe como argumento un string cualquiera y devuelve el mismo string en lowercase. */
