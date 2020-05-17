@@ -7,8 +7,8 @@
 #include <vector>
 
 
-#define ESPACIO 12
-#define TABLA_W 30
+#define ESPACIO 12  // Espacio dejado entre números por secuencia
+#define TABLA_W 30  // El espacio dejado entre los clicks dentro de la tabla del terminal/consola
 
 void Sequence::selectSort() {
     // Método para ordenar el miembro 'nrmlz_numbers' de la secuencia usando el bubble sort algorithm.
@@ -129,7 +129,8 @@ bool askReadFile() {
 void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuencias) {
     // Función para crear las secuencias de números random.
     
-    arrSecuencias.resize(num_sec);
+    // Se ajusta el tamaño del vector al número de secuencias a leer.
+    arrSecuencias.resize(num_sec);  
 
     struct timespec start, end;  // Variables para comenzar y terminar el 'cronómetro'.
     double clicks;  // Variable para guardar los clicks.
