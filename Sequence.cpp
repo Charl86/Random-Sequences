@@ -1,5 +1,4 @@
 ﻿#include "Sequence.h"
-#include <iostream>
 #include <iomanip>
 #include <string>
 #include <fstream>
