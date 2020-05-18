@@ -90,11 +90,6 @@ es decir, cierto si se va a leer de un archivo, o falso si no se va a leer. Util
 guardar la respuesta del usuario y validarla. */
 bool askReadFile();
 
-/* Cuenta las líneas de un archivo ya existente. Esta función está en desuso pues ya no se está
-leyendo el archivo inicialmente para contar sus líneas, y después volverlo a leer. Toma como argumento
-el objeto fstream asociado al archivo y devuelve las líneas contadas. */
-int countLines(fstream &);
-
 // Últimas funciones implementadas:
 
 /* Función que ordena el vector de secuencias utilizando el selection sort algorithm. Toma como argumentos
