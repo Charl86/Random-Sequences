@@ -53,7 +53,6 @@ int userSequence() {
 }
 
 void makeFilenames(fstream &fileSeqs, fstream &fileNorms, bool &readFile, int &numSeqs) {
-    string answerReadFile;  // Respuesta a si se desea leer un archivo.
     string seqFilename;  // Nombre del archivo con las secuencias sin normalizar.
     string normlicedFilename;  // Nombre del archivo con las secuencias normalizadas.
 
@@ -125,7 +124,6 @@ bool askReadFile() {
                      responda correctamente. */
 }
 
-// void makeSequences(fstream &fileSeqs, int num_sec, Sequence arrSecuencias[]) {
 void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuencias) {
     // Función para crear las secuencias de números random.
     
