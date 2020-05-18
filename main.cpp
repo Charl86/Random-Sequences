@@ -1,5 +1,6 @@
 /*
     Carlos A. Hernández
+    CCOM 3033
 
     Este programa se encarga de crear (o leer) un archivo de secuencias random. Cada
     secuencia tendrá generalmente 10 números y la cantidad de secuencias es indicada
@@ -7,7 +8,6 @@
     las secuencias van a ser normalizadas desplegadas, seguidas por la media y la desviación
     estándar de la secuencia.
 */
-
 
 #include "Sequence.h"
 #include <ctime>
