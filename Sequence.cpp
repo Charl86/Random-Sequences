@@ -1,4 +1,9 @@
-﻿#include "Sequence.h"
+﻿/*
+    Carlos A. Hernández
+    CCOM 3033
+*/
+
+#include "Sequence.h"
 #include <iomanip>
 #include <string>
 #include <fstream>

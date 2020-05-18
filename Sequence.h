@@ -1,4 +1,9 @@
-﻿#ifndef SEQUENCE_H
+﻿/*
+    Carlos A. Hernández
+    CCOM 3033
+*/
+
+#ifndef SEQUENCE_H
 #define SEQUENCE_H
 
 #include <iostream>
