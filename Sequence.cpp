@@ -478,17 +478,3 @@ string lowerCase(string word) {
     dirección (y el tipo de la función es string). */
     return lowered;
 }
-
-int countLines(fstream  &readFile) {
-    // Función para contar las líneas en el archivo readFile.
-
-    string nth_line;
-    double numbers;
-    int count = 0;
-
-    // Mientras haya una línea disponible para ser guardada en nth_line
-    while (getline(readFile, nth_line))
-        count += 1;  // sumar 1 al contador.
-
-    return count;  // Se devuelve lo contado.
-}
