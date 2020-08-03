@@ -79,7 +79,7 @@ void makeFilenames(fstream &fileSeqs, fstream &fileNorms, bool &readFile, int &n
         // abrir el archivo sin borrar su contenido previo
         // fileSeqs.open(seqFilename + ".txt");
         fileSeqs.open(seqFilename + ".txt", fstream::out | fstream::in);
-        
+
         // validar que el nombre provisto del archivo exista.
         while (!fileSeqs.is_open()) {  // Si no existe, dejarle saber al usuario que no existe
             cout << endl << "El archivo que ha ingresado no existe. Asegurese de que el archivo"
@@ -109,10 +109,10 @@ bool askReadFile() {
     do {  // Inicio de un do-while loop pseudo infinito.
         cout << endl << "Desea leer las secuencias de un archivo existente?" << endl;
         cin >> answer;
-        
+
         /* Se convierte la respuesta a lowercase. E.g. Si el usuario ingresa "Si"
         en vez de "si", se toma eso en cuenta. */
-        answer = lowerCase(answer);  
+        answer = lowerCase(answer);
 
         // Si la respuesta es remotamente afirmativa
         if (answer == "yes" || answer == "y"
@@ -131,9 +131,9 @@ bool askReadFile() {
 
 void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuencias) {
     // Función para crear las secuencias de números random.
-    
+
     // Se ajusta el tamaño del vector al número de secuencias a leer.
-    arrSecuencias.resize(num_sec);  
+    arrSecuencias.resize(num_sec);
 
     struct timespec start, end;  // Variables para comenzar y terminar el 'cronómetro'.
     double clicks;  // Variable para guardar los clicks.
@@ -156,14 +156,14 @@ void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuenc
             if (random_number > mayor)
                 // Si lo es, se guarda en la variable 'mayor'.
                 mayor = random_number;
-            
+
             // Se inserta una cantidad de espacios, seguidos por el número random creado.
             fileSeqs << setw(ESPACIO) << random_number;
             // Se guarda el número random en el arreglo, en la fila i columna j.
             arrSecuencias[i].rand_numbers[j] = random_number;
         }
         clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
-        
+
         // Se calculan los clicks (esta es la única manera en la que salen sin ser 0):
         clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
@@ -176,7 +176,7 @@ void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuenc
         arrSecuencias[i].clicks = clicks;
 
         // Se guarda el número mayor en la fila i, en el arreglo a la derecha de los clicks.
-        arrSecuencias[i].mayor = mayor;  
+        arrSecuencias[i].mayor = mayor;
 
         // Si no se itera por la última secuencia, insertar una nueva línea.
         if (i + 1 != num_sec) {fileSeqs << endl;}
@@ -197,7 +197,7 @@ void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &arrSecuen
     que el número de líneas a leer */
     while (fileSeqs >> id_text && line_counter < num_sec) {
         // El dataID se guarda en su variable respectiva.
-        
+
         // Se crea una nueva secuencia y se añade al vector de secuencias.
         Sequence new_sequence;
         arrSecuencias.push_back(new_sequence);
@@ -221,7 +221,7 @@ void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &arrSecuen
         secuencia i en el vector de secuencias. */
         arrSecuencias[line_counter].clicks = clicks;
         arrSecuencias[line_counter].mayor = static_cast<double>(mayor);
-        
+
         line_counter += 1;  // Se suma uno al contador de líneas.
     }
 
@@ -246,7 +246,7 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
 
     // header para la media y la desviación:
     fileNorms << setw(11) << "Mean" << setw(12) << "StdDev";
-    
+
     // Línea divisora:
     fileNorms << endl << string(155, '-') << endl;
 
@@ -257,7 +257,7 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
     for (int n = 0; n < num_secs; n++) {
         // se inserta una cantidad de espacios específica, seguidos por el dataID
         fileNorms << setw(9 - (to_string(n + 1).length() - 1)) << arrSecuencias[n].dataID;
-        
+
         // se obtiene al número mayor de la secuencia respectiva
         double mayor = arrSecuencias[n].mayor;
         double media = 0.0;
@@ -282,7 +282,7 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
             // se guarda el número normalizado en el arreglo
             arrSecuencias[n].nrmlz_numbers[x] = nrmlzCurrNum;
             // y se inserta en el archivo de las secuencias normalizadas.
-            fileNorms << setw(ESPACIO) << nrmlzCurrNum;  
+            fileNorms << setw(ESPACIO) << nrmlzCurrNum;
         }
         /* Se calcula la media como la suma de los números normalizados
         divididos por la cantidad de los mismos. */
@@ -318,7 +318,7 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
     selectionSort(arrSecuencias, num_secs, fileNorms);
     bubbleSort(arrSecuencias, num_secs, fileNorms);
 }
-                                                                                                          
+
 double calcDeviation(double randomSeq[], double seq_mean) {
     // Función para calcular la desviación de la secuencia 'sec_idx' con la media 'seq_mean'.
 
@@ -330,7 +330,7 @@ double calcDeviation(double randomSeq[], double seq_mean) {
         añade a la desviación. */
         std_deviation += pow(randomSeq[i] - seq_mean, 2);
     }
-    /* Finalmente, se divide la desviación por la cantidad de números por secuencia 
+    /* Finalmente, se divide la desviación por la cantidad de números por secuencia
     y se le saca la raíz cuadrada */
     std_deviation = sqrt(std_deviation/NUMS_POR_SEC);
     return std_deviation;  // y se devuelve el resultado.
@@ -394,7 +394,7 @@ void bubbleSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNo
     } while (swapped);
 
     clock_gettime(CLOCK_MONOTONIC, &end);  // Se detiene el cronómetro.
-    
+
     // Se calculan los clicks
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
@@ -440,11 +440,11 @@ void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fi
 
         // Se calculan los clicks
         clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
-        
+
         sumOfClicks += clicks;  // Se añaden los clicks a ésta variable.
 
         fileNorms << setw(13) << arrSecuencias[i].dataID;  // Desplegar el dataID de la secuencia.
-        
+
         for (int j = 0; j < NUMS_POR_SEC; j++) {  // Por cada número en la secuencia, se desplega.
             if (j + 1 == NUMS_POR_SEC)
                 fileNorms << setw(ESPACIO - 5) << arrSecuencias[i].nrmlz_numbers[j];
@@ -471,15 +471,11 @@ void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fi
 string lowerCase(string word) {
     // Función para devolver el string dado en lowercase.
 
-    // Se crea un arreglo de caracteres del mismo tamaño que el parámetro.
-    char lowered[word.length()];
-
     // Por cada caracter en el arreglo de caracteres
     for (int i = 0; i < word.length(); i++) {
-        // Convertir el caracter i en lowercase y guardarlo en el arreglo.
-        lowered[i] = tolower(word[i]);
+        // Se le asigna a 'word[i]' la versión lowercase de sí mismo
+        word[i] = tolower(word[i]);
     }
-    /* Devolver el arreglo. Como es un arreglo de caracteres, no se devuelve la
-    dirección (y el tipo de la función es string). */
-    return lowered;
+    // Se devuelve la variable 'word' modificada.
+    return word;
 }
