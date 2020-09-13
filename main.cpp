@@ -19,22 +19,22 @@ int main() {
     fstream SeqsFile;  // fstream object to read random sequences file.
     fstream NormlicedFile;  // fstream object wherein to output processed sequences.
 
-    /*Ask user how many sequences are wanted to be processed and whether or not
+    /* Ask user how many sequences are wanted to be processed and whether or not
     to create said sequences on the spot or read them from an existing file. */
     numberOfSeqs = userSequence();
 
     // Create a vector of sequences.
-    vector <Sequence> Secuencias(0);
+    vector <Sequence> Sequences(0);
 
     makeFilenames(SeqsFile, NormlicedFile, readFile, numberOfSeqs);  // Create files.
 
     if (readFile)  // If sequences are to be read, call readSequences function
-        readSequences(SeqsFile, numberOfSeqs, Secuencias);
+        readSequences(SeqsFile, numberOfSeqs, Sequences);
     else  // Otherwise, create the sequences.
-        makeSequences(SeqsFile, numberOfSeqs, Secuencias);
+        makeSequences(SeqsFile, numberOfSeqs, Sequences);
 
     // Normalize sequences.
-    getSequences(SeqsFile, NormlicedFile, numberOfSeqs, Secuencias);
+    getSequences(SeqsFile, NormlicedFile, numberOfSeqs, Sequences);
 
     // Close files.
     SeqsFile.close();

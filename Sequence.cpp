@@ -7,17 +7,17 @@
 #include <vector>
 
 
-#define ESPACIO 12  // Amount of padding space between numbers
-#define TABLA_W 30  // Amount of padding space for furthermost values.
+#define SPACE 12  // Amount of padding space between numbers
+#define CELL_W 30  // Amount of padding space for furthermost values.
 
 // Selection Sort method for Sequence class
 void Sequence::selectSort() {
     double smallest;
     int smallestIdx;
-    for (int start = 0; start < NUMS_POR_SEC - 1; start++) {
+    for (int start = 0; start < NUMS_PER_SEC - 1; start++) {
         smallest = nrmlz_numbers[start];
         smallestIdx = start;
-        for (int i = start + 1; i < NUMS_POR_SEC; i++) {
+        for (int i = start + 1; i < NUMS_PER_SEC; i++) {
             if (smallest > nrmlz_numbers[i]) {
                 smallest = nrmlz_numbers[i];
                 smallestIdx = i;
@@ -33,7 +33,7 @@ void Sequence::bubbleSort() {
     bool swapped;
     do {
         swapped = false;
-        for (int i = 0; i < NUMS_POR_SEC - 1; i++) {
+        for (int i = 0; i < NUMS_PER_SEC - 1; i++) {
             if (nrmlz_numbers[i] > nrmlz_numbers[i + 1]) {
                 swapped = true;
                 std::swap(nrmlz_numbers[i], nrmlz_numbers[i + 1]);
@@ -45,7 +45,7 @@ void Sequence::bubbleSort() {
 // Get amount of sequences
 int userSequence() {
     int num_seq;  // Number of sequences.
-    cout << "Provive the number of sequences to be read or created:" << endl;
+    cout << "Provide the number of sequences to be read or created:" << endl;
     cin >> num_seq;  // Save user input in variable
     return num_seq;  // and return it.
 }
@@ -117,8 +117,8 @@ bool askReadFile() {
 }
 
 // Create random sequences
-void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuencias) {
-    arrSecuencias.resize(num_sec);  // Resize vector of sequences with provided amount.
+void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &sequeArray) {
+    sequeArray.resize(num_sec);  // Resize vector of sequences with provided amount.
 
     struct timespec start, end;  // Variables to measure performance speed.
     double clicks;  // Variable to save performance speed.
@@ -127,23 +127,23 @@ void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuenc
     for (int i = 0; i < num_sec; i++) {
         // Insert and save dataID.
         fileSeqs << setw(9) << "dataID#" << (i + 1);
-        arrSecuencias[i].dataID = "dataID#" + to_string(i + 1);
+        sequeArray[i].dataID = "dataID#" + to_string(i + 1);
 
         // Initialize variable in order to find greatest number in sequence.
-        int mayor = -1;
+        int greatest = -1;
         clock_gettime(CLOCK_MONOTONIC, &start);  // Start stopwatch.
         ios_base::sync_with_stdio(false);
-        for (int j = 0; j < NUMS_POR_SEC; j++) {  // For each number index in sequence
+        for (int j = 0; j < NUMS_PER_SEC; j++) {  // For each number index in sequence
             int random_number = rand();  // Generate random number.
 
             // If created number is greater than previously greatest number
-            if (random_number > mayor)
-                mayor = random_number;  // Make that one the greatest.
+            if (random_number > greatest)
+                greatest = random_number;  // Make that one the greatest.
 
             // Insert some padding space.
-            fileSeqs << setw(ESPACIO) << random_number;
+            fileSeqs << setw(SPACE) << random_number;
             // Save created number in 2D sequences array, with coordinates (i, j).
-            arrSecuencias[i].rand_numbers[j] = random_number;
+            sequeArray[i].rand_numbers[j] = random_number;
         }
         clock_gettime(CLOCK_MONOTONIC, &end);  // Stop stopwatch. (the redundancy)
 
@@ -151,15 +151,15 @@ void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuenc
         clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
         // Output clicks to file.
-        fileSeqs << setw(ESPACIO) << fixed << clicks << defaultfloat;
+        fileSeqs << setw(SPACE) << fixed << clicks << defaultfloat;
         // Output greatest number.
-        fileSeqs << setw(ESPACIO) << mayor;
+        fileSeqs << setw(SPACE) << greatest;
 
         // Save performance speed in sequence object.
-        arrSecuencias[i].clicks = clicks;
+        sequeArray[i].clicks = clicks;
 
         // Save greatest number in sequence object.
-        arrSecuencias[i].mayor = mayor;
+        sequeArray[i].greatest = greatest;
 
         // If not iterating through the last line, insert a new line.
         if (i + 1 != num_sec) {fileSeqs << endl;}
@@ -167,37 +167,37 @@ void makeSequences(fstream &fileSeqs, int num_sec, vector <Sequence> &arrSecuenc
 }
 
 // Read sequences from file
-void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &arrSecuencias) {
+void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &sequeArray) {
     string id_text;  // Data id.
     int random_number;  // Current random number of sequence.
     double clicks;  // Performance speed.
-    int mayor;  /// Greatest number per sequence.
+    int greatest;  /// Greatest number per sequence.
 
     int line_counter = 0;
     // While not end of file and counter less than amount of sequences
     while (fileSeqs >> id_text && line_counter < num_sec) {
         // Create new sequence and append to vector.
         Sequence new_sequence;
-        arrSecuencias.push_back(new_sequence);
+        sequeArray.push_back(new_sequence);
 
         // Save data id in sequence object.
-        arrSecuencias[line_counter].dataID = id_text;
+        sequeArray[line_counter].dataID = id_text;
 
         // For each random number index in sequence
-        for (int j = 0; j < NUMS_POR_SEC; j++) {
+        for (int j = 0; j < NUMS_PER_SEC; j++) {
             // Read current random number
             fileSeqs >> random_number;
 
             // Store random number in sequence object random numbers array.
-            arrSecuencias[line_counter].rand_numbers[j] = static_cast<double>(random_number);
+            sequeArray[line_counter].rand_numbers[j] = static_cast<double>(random_number);
         }
         // Read performance speed and greatest number.
         fileSeqs >> clicks;
-        fileSeqs >> mayor;
+        fileSeqs >> greatest;
 
         // Store clicks and greatest number in respective sequence object members.
-        arrSecuencias[line_counter].clicks = clicks;
-        arrSecuencias[line_counter].mayor = static_cast<double>(mayor);
+        sequeArray[line_counter].clicks = clicks;
+        sequeArray[line_counter].greatest = static_cast<double>(greatest);
 
         line_counter += 1;
     }
@@ -212,10 +212,10 @@ void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &arrSecuen
 }
 
 // Process and normalize sequences
-void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <Sequence> &arrSecuencias) {
+void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <Sequence> &sequeArray) {
     // Insert header in out file.
     fileNorms << setw(10) << "dataID";
-    for (int i = 0; i < NUMS_POR_SEC; i++)
+    for (int i = 0; i < NUMS_PER_SEC; i++)
         fileNorms << setw(11) <<"Value_" << (i + 1);
 
     // Headers for mean value and standard deviation:
@@ -225,69 +225,69 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
     fileNorms << endl << string(155, '-') << endl;
 
     // Intitialzie lowest number to greatest number.
-    double menor = arrSecuencias[0].mayor;
-    int menor_pos[2] = {0};
+    double smallest = sequeArray[0].greatest;
+    int smallestPos[2] = {0};
     // For each sequence index
     for (int n = 0; n < num_secs; n++) {
         // Insert sequence data id.
-        fileNorms << setw(9 - (to_string(n + 1).length() - 1)) << arrSecuencias[n].dataID;
+        fileNorms << setw(9 - (to_string(n + 1).length() - 1)) << sequeArray[n].dataID;
 
         // Store greatest number.
-        double mayor = arrSecuencias[n].mayor;
+        double greatest = sequeArray[n].greatest;
 
         // Initialize mean value, deviation and
-        double media = 0.0;
+        double mean = 0.0;
         double deviation = 0.0;
         double nrmlzCurrNum;
         // For each number index per sequence
-        for (int x = 0; x < NUMS_POR_SEC; x++) {
+        for (int x = 0; x < NUMS_PER_SEC; x++) {
             // Compute normalized value.
-            nrmlzCurrNum = arrSecuencias[n].rand_numbers[x]/(mayor);
+            nrmlzCurrNum = sequeArray[n].rand_numbers[x]/(greatest);
 
-            media += nrmlzCurrNum;  // Add to mean.
+            mean += nrmlzCurrNum;  // Add to mean.
 
             /* If computed number is greater than greatest number, make it the greatest and record
             its position. */
-            if (menor > nrmlzCurrNum) {
-                menor = nrmlzCurrNum;
-                menor_pos[0] = n;
-                menor_pos[1] = x;
+            if (smallest > nrmlzCurrNum) {
+                smallest = nrmlzCurrNum;
+                smallestPos[0] = n;
+                smallestPos[1] = x;
             }
 
             // Save normalized value.
-            arrSecuencias[n].nrmlz_numbers[x] = nrmlzCurrNum;
+            sequeArray[n].nrmlz_numbers[x] = nrmlzCurrNum;
             // Output normalized value to file.
-            fileNorms << setw(ESPACIO) << nrmlzCurrNum;
+            fileNorms << setw(SPACE) << nrmlzCurrNum;
         }
         /* Compute mean value. */
-        media = media/NUMS_POR_SEC;
+        mean = mean/NUMS_PER_SEC;
 
         // .
-        deviation = calcDeviation(arrSecuencias[n].nrmlz_numbers, media);
+        deviation = calcDeviation(sequeArray[n].nrmlz_numbers, mean);
 
         // Store values in respective sequence object.
-        arrSecuencias[n].media = media;
-        arrSecuencias[n].stdDev = deviation;
+        sequeArray[n].mean = mean;
+        sequeArray[n].stdDev = deviation;
 
         // Output values.
-        fileNorms << setw(ESPACIO) << arrSecuencias[n].media;
-        fileNorms << setw(ESPACIO) << arrSecuencias[n].stdDev;
+        fileNorms << setw(SPACE) << sequeArray[n].mean;
+        fileNorms << setw(SPACE) << sequeArray[n].stdDev;
         // If not iterating through last line, insert a new line.
         if (n + 1 != num_secs) { fileNorms << endl; }
         else {
             // If iterating through last line, output lowest number of all sequences.
-            fileNorms << string(2, '\n') << "Minimum value of all sequences is: " << menor << ", found"
-            << " on column " << (menor_pos[1] + 1) << " of sequence number " << (menor_pos[0] + 1);
+            fileNorms << string(2, '\n') << "Minimum value of all sequences is: " << smallest << ", found"
+            << " on column " << (smallestPos[1] + 1) << " of sequence number " << (smallestPos[0] + 1);
         }
     }
 
     // Display 'ALGORITHM' header in terminal.
-    cout << endl << "ALGORITHM" << setw(TABLA_W + 20) << "Time taken to order sequences array using the mean value"
-    << setw(TABLA_W + 15) << "Average time taken to order each sequence";
+    cout << endl << "ALGORITHM" << setw(CELL_W + 20) << "Time taken to order sequences array using the mean value"
+    << setw(CELL_W + 15) << "Average time taken to order each sequence";
 
     // Order array of sequences using the respective algorithms.
-    selectionSort(arrSecuencias, num_secs, fileNorms);
-    bubbleSort(arrSecuencias, num_secs, fileNorms);
+    selectionSort(sequeArray, num_secs, fileNorms);
+    bubbleSort(sequeArray, num_secs, fileNorms);
 }
 
 // Compute standard deviation
@@ -295,17 +295,17 @@ double calcDeviation(double randomSeq[], double seq_mean) {
     double std_deviation = 0.0;  // Se inicializa la desviación.
 
     // For each normalized number index of sequence
-    for (int i = 0; i < NUMS_POR_SEC; i++) {
+    for (int i = 0; i < NUMS_PER_SEC; i++) {
         // Compute raw deviation.
         std_deviation += pow(randomSeq[i] - seq_mean, 2);
     }
     // Compute standard deviation and return it.
-    std_deviation = sqrt(std_deviation/NUMS_POR_SEC);
+    std_deviation = sqrt(std_deviation/NUMS_PER_SEC);
     return std_deviation;
 }
 
 // Selection sort algorithm to sort array of sequences
-void selectionSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNorms) {
+void selectionSort(vector <Sequence> sequeArray, int numsOfSeqs, fstream &fileNorms) {
     struct timespec start, end;  // Variables to operate 'stopwatch'
     double clicks;  // Performance speed.
 
@@ -316,30 +316,30 @@ void selectionSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fil
     Sequence smallestMeanSeq;
     int sm_meanIdx;
     for (int start = 0; start < numsOfSeqs - 1; start++) {
-        smallestMeanSeq = arrSecuencias[start];
+        smallestMeanSeq = sequeArray[start];
         sm_meanIdx = start;
         for (int i = start + 1; i < numsOfSeqs; i++) {
-            if (smallestMeanSeq.media > arrSecuencias[i].media) {
-                smallestMeanSeq = arrSecuencias[i];
+            if (smallestMeanSeq.mean > sequeArray[i].mean) {
+                smallestMeanSeq = sequeArray[i];
                 sm_meanIdx = i;
             }
         }
-        arrSecuencias[sm_meanIdx] = arrSecuencias[start];
-        arrSecuencias[start] = smallestMeanSeq;
+        sequeArray[sm_meanIdx] = sequeArray[start];
+        sequeArray[start] = smallestMeanSeq;
     }
     clock_gettime(CLOCK_MONOTONIC, &end);  // Stop stopwatch.
     // Compute performance speed.
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
     // Display 'SELECTION' header, along with the performance speed.
-    cout << endl << "SELECTION" << setw(TABLA_W + 3) << fixed << clicks;
+    cout << endl << "SELECTION" << setw(CELL_W + 3) << fixed << clicks;
 
     // Call function to output sequences sorted by Selection Sort.
-    outSortedArray(arrSecuencias, numsOfSeqs, fileNorms, false);
+    outSortedArray(sequeArray, numsOfSeqs, fileNorms, false);
 }
 
 // Bubble Sort algorithm to sort array of sequences
-void bubbleSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNorms) {
+void bubbleSort(vector <Sequence> sequeArray, int numsOfSeqs, fstream &fileNorms) {
     struct timespec start, end;  // Variables to operate 'stopwatch'
     double clicks;  // Performance speed.
 
@@ -351,8 +351,8 @@ void bubbleSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNo
     do {
         swapped = false;
         for (int i = 0; i < numsOfSeqs - 1; i++) {
-            if (arrSecuencias[i].media > arrSecuencias[i + 1].media) {
-                swap(arrSecuencias[i], arrSecuencias[i + 1]);
+            if (sequeArray[i].mean > sequeArray[i + 1].mean) {
+                swap(sequeArray[i], sequeArray[i + 1]);
                 swapped = true;
             }
         }
@@ -364,14 +364,14 @@ void bubbleSort(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNo
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
     // Display 'BUBBLE' header along with performance speed.
-    cout << endl << "BUBBLE" << setw(TABLA_W + 6) << clicks;
+    cout << endl << "BUBBLE" << setw(CELL_W + 6) << clicks;
 
     // Output sorted array.
-    outSortedArray(arrSecuencias, numsOfSeqs, fileNorms, true);
+    outSortedArray(sequeArray, numsOfSeqs, fileNorms, true);
 }
 
 // Output to file sorted array of sequences, and sorting each sequence before output
-void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fileNorms, bool bubbleSort) {
+void outSortedArray(vector <Sequence> sequeArray, int numsOfSeqs, fstream &fileNorms, bool bubbleSort) {
     fileNorms << endl << endl;  // Padding lines.
 
     // If output is bubble sorted array
@@ -393,10 +393,10 @@ void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fi
         clock_gettime(CLOCK_MONOTONIC, &start);  // Start stopwatch.
         ios_base::sync_with_stdio(false);
         if (!bubbleSort) {  // If not bubble sorted
-            arrSecuencias[i].selectSort();  // Selection sort the sequence.
+            sequeArray[i].selectSort();  // Selection sort the sequence.
         }
         else {  // Else, bubble sort the sequence.
-            arrSecuencias[i].bubbleSort();
+            sequeArray[i].bubbleSort();
         }
         clock_gettime(CLOCK_MONOTONIC, &end);  // Stop stopwatch.
 
@@ -405,17 +405,17 @@ void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fi
 
         sumOfClicks += clicks;  // Add performance speed to sum of all of clicks values.
 
-        fileNorms << setw(13) << arrSecuencias[i].dataID;  // Output dataID of sequence.
+        fileNorms << setw(13) << sequeArray[i].dataID;  // Output dataID of sequence.
 
-        for (int j = 0; j < NUMS_POR_SEC; j++) {  // Output to file numbers in sequence.
-            if (j + 1 == NUMS_POR_SEC)
-                fileNorms << setw(ESPACIO - 5) << arrSecuencias[i].nrmlz_numbers[j];
+        for (int j = 0; j < NUMS_PER_SEC; j++) {  // Output to file numbers in sequence.
+            if (j + 1 == NUMS_PER_SEC)
+                fileNorms << setw(SPACE - 5) << sequeArray[i].nrmlz_numbers[j];
             else
-                fileNorms << setw(ESPACIO) << arrSecuencias[i].nrmlz_numbers[j];
+                fileNorms << setw(SPACE) << sequeArray[i].nrmlz_numbers[j];
         }
 
         // Output mean value of sequence.
-        fileNorms << setw(ESPACIO + 3) << arrSecuencias[i].media;
+        fileNorms << setw(SPACE + 3) << sequeArray[i].mean;
 
         // If not iterating through the last line, insert a new line.
         if (i + 1 != numsOfSeqs)
@@ -426,7 +426,7 @@ void outSortedArray(vector <Sequence> arrSecuencias, int numsOfSeqs, fstream &fi
         fileNorms << endl << string(144, '-');
     }
     // Display average performance speed value.
-    cout << setw(TABLA_W + 18) << sumOfClicks/numsOfSeqs;
+    cout << setw(CELL_W + 18) << sumOfClicks/numsOfSeqs;
 }
 
 // Return lowercase parameter
