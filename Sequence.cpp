@@ -205,8 +205,8 @@ void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &sequeArra
     // If line counter is less than amount of sequences
     if (line_counter < num_sec) {
         // Let user know than only ${line_counter} amount of sequences were read.
-        cout << endl <<"Only " << line_counter << " of the " << num_sec
-        << " stated sequences were read" << endl;
+        cout << endl <<"Only " << line_counter << " of " << num_sec
+        << " sequences were read since those were the only ones available." << endl;
         num_sec = line_counter;
     }
 }
@@ -281,9 +281,11 @@ void getSequences(fstream &fileSeqs, fstream &fileNorms, int num_secs, vector <S
         }
     }
 
-    // Display 'ALGORITHM' header in terminal.
-    cout << endl << "ALGORITHM" << setw(CELL_W + 20) << "Time taken to order sequences array using the mean value"
-    << setw(CELL_W + 15) << "Average time taken to order each sequence";
+    // Display headers for information output.
+    cout << endl << "ALGORITHM | Time taken to order sequences array using the mean value"
+    << " | Average time taken to order each sequence" << endl;
+
+    cout << string(10, '-') << "|" << string(58, '-') << "|" << string(43, '-');
 
     // Order array of sequences using the respective algorithms.
     selectionSort(sequeArray, num_secs, fileNorms);
@@ -332,7 +334,7 @@ void selectionSort(vector <Sequence> sequeArray, int numsOfSeqs, fstream &fileNo
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
     // Display 'SELECTION' header, along with the performance speed.
-    cout << endl << "SELECTION" << setw(CELL_W + 3) << fixed << clicks;
+    cout << endl << "SELECTION | " << setw(31) << fixed << clicks;
 
     // Call function to output sequences sorted by Selection Sort.
     outSortedArray(sequeArray, numsOfSeqs, fileNorms, false);
@@ -364,7 +366,7 @@ void bubbleSort(vector <Sequence> sequeArray, int numsOfSeqs, fstream &fileNorms
     clicks = (((end.tv_sec - start.tv_sec) * 1e9) + (end.tv_nsec - start.tv_nsec)) * 1e-9;
 
     // Display 'BUBBLE' header along with performance speed.
-    cout << endl << "BUBBLE" << setw(CELL_W + 6) << clicks;
+    cout << endl << "BUBBLE    | " << setw(31) << clicks;
 
     // Output sorted array.
     outSortedArray(sequeArray, numsOfSeqs, fileNorms, true);
@@ -426,7 +428,10 @@ void outSortedArray(vector <Sequence> sequeArray, int numsOfSeqs, fstream &fileN
         fileNorms << endl << string(144, '-');
     }
     // Display average performance speed value.
-    cout << setw(CELL_W + 18) << sumOfClicks/numsOfSeqs;
+    cout << setw(27) << "|" << setw(25);
+    cout << sumOfClicks/numsOfSeqs;
+    if (bubbleSort)
+        cout << endl;
 }
 
 // Return lowercase parameter
