@@ -8,16 +8,16 @@
 using namespace std;
 
 
-const int NUMS_POR_SEC = 10;  // Amount of numbers per sequence.
+const int NUMS_PER_SEC = 10;  // Amount of numbers per sequence.
 
 struct Sequence {  // Sequence struct
     std::string dataID;  // dataID member, to identify sequence.
-    double mayor;  // Greatest number of sequence.
-    double media;  // Mean value of sequence.
+    double greatest;  // Greatest number of sequence.
+    double mean;  // Mean value of sequence.
     double stdDev;  // Standard deviation for normalized sequence.
     double clicks;  // Performance speed.
-    double rand_numbers[NUMS_POR_SEC];  // Randomly generated numbers.
-    double nrmlz_numbers[NUMS_POR_SEC];  // Normalized numbers.
+    double rand_numbers[NUMS_PER_SEC];  // Randomly generated numbers.
+    double nrmlz_numbers[NUMS_PER_SEC];  // Normalized numbers.
 
     // Methods:
     void selectSort();
