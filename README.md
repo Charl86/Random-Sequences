@@ -2,6 +2,10 @@
 
 This program takes a file of randomly generated sequences and processess them, or creates a new file of randomly generated sequences in order to process it. During the processing phase the program will normalize the sequences, find the mean value, find the standard deviation and sorts them using the Selection Sort and Bubble Sort algorithms.
 
+<p align="center">
+    <img src="gallery/sample.png" width="738">
+</p>
+
 # Index
 - [About](#About)
 - [Usage](#Usage)
@@ -29,6 +33,8 @@ If MingGW is installed on a Windows-based system, the above command should work 
 
 # Gallery
 
-<p>
-    <img src="gallery/sampleOutput.png" width="738">
-</p>
+![Wrong Name or Nonexistent File](gallery/wrongFileName.png)
+
+![Wrong Answer to Yes-No Question](gallery/wrongAnswer.png)
+
+![Sample Output](gallery/sampleOutput.png)

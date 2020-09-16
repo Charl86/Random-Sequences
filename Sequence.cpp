@@ -57,12 +57,12 @@ void makeFilenames(fstream &fileSeqs, fstream &fileNorms, bool &readFile, int &n
 
     if (askReadFile()) {  // If user wants to read sequences from existing file.
         readFile = true;  // Set flag as true and ask for filename.
-        cout << endl << "Type in the name of file you wish for the program to read:" << endl;
+        cout << endl << "Write the name of file you wish for the program to read:" << endl;
     }
     else {
         readFile = false;  // Else set flag as false.
-        cout << endl << "Type in filename"
-        << " in which to save the random sequences:" << endl;
+        cout << endl << "Write the name of the file "
+        << "in which the randomly-generated sequences will be saved:" << endl;
     }
     cin >> seqFilename;  // Save sequence filename.
 
@@ -73,7 +73,7 @@ void makeFilenames(fstream &fileSeqs, fstream &fileNorms, bool &readFile, int &n
         // Validate existence of file.
         while (!fileSeqs.is_open()) {  // If file doesn't exist, notify user
             cout << endl << "The file provided does not exist. Make sure that the file"
-            << endl << "exist or that its name be typed correctly." << endl;
+            << endl << "exist or that its name is typed correctly." << endl;
 
             // Ask user again for filename.
             cin >> seqFilename;
@@ -205,8 +205,9 @@ void readSequences(fstream &fileSeqs, int &num_sec, vector <Sequence> &sequeArra
     // If line counter is less than amount of sequences
     if (line_counter < num_sec) {
         // Let user know than only ${line_counter} amount of sequences were read.
-        cout << endl <<"Only " << line_counter << " of " << num_sec
-        << " sequences were read since those were the only ones available." << endl;
+        cout << endl <<"Only " << line_counter << " out of " << num_sec
+        << " specified sequences were read since that was the amount of sequences"
+        << " available." << endl;
         num_sec = line_counter;
     }
 }
