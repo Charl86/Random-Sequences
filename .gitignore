@@ -11,6 +11,7 @@ Trash/
 
 # Ignore text files:
 *.txt
+!LICENSE*
 
 # Ignore extentions:
 *.exe
