@@ -10,7 +10,6 @@ This program takes a file of randomly generated sequences and processess them, o
 - [Usage](#Usage)
 - [Resources](#Resources)
 - [Gallery](#Gallery)
-- [Licence](#Licence)
 
 # About
 This was one of my first 'major' projects (back then as a programming débutant), in which I implemented concepts learned in Computer Science classes such as Abstract Data Types, classes, objects, implementing basic sorting algorithms, etc. while also learning how to use git to track and version file changes. Although it was a small, harmless project, I learned a lot from it and it serves as a reference point to look at how I used to code and organize a project versus how I do so now.
