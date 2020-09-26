@@ -12,7 +12,7 @@ This program takes a file of randomly generated sequences and processess them, o
 - [Gallery](#Gallery)
 
 # About
-This was one of my first 'major' projects (back then as a programming débutant), in which I implemented concepts learned in Computer Science classes such as Abstract Data Types, classes, objects, implementing basic sorting algorithms, etc. while also learning how to use git to track and version file changes. Although it was a small, harmless project, I learned a lot from it and it serves as a reference point to look at how I used to code and organize a project versus how I do so now.
+This program served as an introductory exercise for practicing use of programming concepts such as Object-Oriented Programming (the Sequence struct, its members and methods), Abstract Data Types (as seen in the implementation of a Sequence, a collection of elements inside a vector) and algorithms and their computational complexity, given by the employed Selection Sort and Bubble Sort algorithms. As well as the aforementioned concepts, other software-developing activities, such as version control using Git, were starting to be put into practice here.
 
 This started as a group class project that was then continued independently.
 
